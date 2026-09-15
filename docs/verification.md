@@ -53,3 +53,20 @@ Configuration validation does not prove that AWS deployment will succeed.
 - Sample-data preview checked in a desktop browser and at a 390-pixel width.
   The narrow EC2 table scrolls horizontally without breaking resource values.
 - These tests use stubs/sample data. They are not live AWS verification.
+
+## CI scripts and image security
+
+- Ruff, ShellCheck, Hadolint, and yamllint passed.
+- Bandit and the Trivy source/dependency scan passed.
+- The initial Debian image failed Trivy's HIGH/CRITICAL security gate.
+  It was replaced by the official Python 3.12 Alpine image, with a pinned
+  `libuuid` security update. No vulnerability-ignore rule was added.
+- Final image scan: zero HIGH/CRITICAL findings with Trivy 0.74.0 and the
+  downloaded vulnerability database on this date. This is a dated scan, not
+  a guarantee against future findings.
+- The seven application tests passed inside the Alpine image. Final image
+  HTTP checks passed: health 200, missing-credentials inventory 503, CSS 200,
+  and the Docker health-check command succeeded.
+- Jenkins and Azure pipeline definitions are prepared. Their scripts were
+  checked locally; Jenkins declarative validation and actual CI jobs remain
+  pending. Docker Hub publication is separate from a successful CI run.

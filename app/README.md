@@ -44,6 +44,9 @@ the web process and does not prove that AWS access is working.
 
 ## Container design
 
+Both stages use a pinned official Python 3.12 Alpine image. The runtime
+updates `libuuid` to the fixed 2.42.3-r1 release. This replaces the initial
+Debian base, whose OS packages failed the image security gate.
 The first Docker stage installs locked Python dependencies. The runtime stage
 copies those dependencies and the application, then runs Gunicorn as UID
 10001. Compose uses a read-only filesystem, a temporary `/tmp`, and no Linux

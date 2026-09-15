@@ -1,0 +1,64 @@
+"""Install pinned Linux x86_64 validation tools under .tools/bin, without sudo."""
+
+import hashlib
+import io
+import platform
+import tarfile
+import urllib.request
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+TOOLS = {
+    "helm": (
+        "https://get.helm.sh/helm-v4.3.0-linux-amd64.tar.gz",
+        "86584a54def73570558f66f5111cc53dfed56689637ae32c1201205d494f54fb",
+        "linux-amd64/helm",
+    ),
+    "kubeconform": (
+        "https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz",
+        "9bc2bffbf71f261128533edaf912153948b7ff238f9a531ae6d34466ec287883",
+        "kubeconform",
+    ),
+    "hadolint": (
+        "https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-x86_64",
+        "c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507",
+        None,
+    ),
+    "trivy": (
+        "https://github.com/aquasecurity/trivy/releases/download/v0.74.0/trivy_0.74.0_Linux-64bit.tar.gz",
+        "2ae6fe3ee734b7fdf11335663e18c75ea12dccc76062f09f164a3b0f8be4371a",
+        "trivy",
+    ),
+}
+
+
+def main():
+    if platform.system() != "Linux" or platform.machine() != "x86_64":
+        raise SystemExit("This installer supports Linux x86_64 only.")
+    destination = ROOT / ".tools" / "bin"
+    destination.mkdir(parents=True, exist_ok=True)
+    for name, (url, expected, member) in TOOLS.items():
+        target = destination / name
+        receipt = destination / (name + ".sha256")
+        if target.exists() and receipt.exists():
+            actual = hashlib.sha256(target.read_bytes()).hexdigest()
+            if receipt.read_text().strip() == expected + ":" + actual:
+                print(f"{name}: verified cached binary", flush=True)
+                continue
+        # URLs are fixed official HTTPS release assets, not user input.
+        with urllib.request.urlopen(url, timeout=120) as response:  # nosec B310
+            archive = response.read()
+        if hashlib.sha256(archive).hexdigest() != expected:
+            raise SystemExit(f"Checksum mismatch for {name}; nothing was installed.")
+        binary = archive
+        if member:
+            with tarfile.open(fileobj=io.BytesIO(archive), mode="r:gz") as bundle:
+                binary = bundle.extractfile(member).read()
+        target.write_bytes(binary)
+        target.chmod(0o755)
+        receipt.write_text(expected + ":" + hashlib.sha256(binary).hexdigest() + "\n")
+        print(f"{name}: downloaded and SHA256 verified", flush=True)
+
+
+if __name__ == "__main__":
+    main()
