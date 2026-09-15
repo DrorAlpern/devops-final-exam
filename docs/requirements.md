@@ -28,7 +28,8 @@ section marks it optional; include an optional chart template to support both.
 - Availability of the mandated VPC `vpc-044604d0bfb707142` in `us-east-1`, and a
   suitable public subnet. Do not silently create or substitute another VPC.
 - Student source IP/CIDR for inbound ports 22 and 5001.
-- Docker Hub account and a token configured through a secure login flow.
+- Docker Hub: resolved. The `droralpern` account is connected and local Jenkins
+  has successfully published through its secret-file credential.
 - Remote Kubernetes cluster and access method.
 - Existing Stage 2 code: not found in the two repositories visible under the
   connected GitHub account. Its absence does not remove the supplied starter

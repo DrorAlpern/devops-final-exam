@@ -131,3 +131,15 @@ only on loopback. kubectl 1.35.8 and Helm 4.3.0 were used.
 Helm history. The scripts under `ci/local-kubernetes` reproduce this exercise.
 The future Ubuntu builder setup script passed syntax/static checks; it has
 not been run on an EC2 instance.
+
+## Final local CI check — 16 September 2026
+
+After the Kubernetes helpers were merged into `dev`, Jenkins build #2
+completed every stage successfully against `daa038cd34f8d18f5c223ea405e5600b23ccbe0b`.
+The repeatable Jenkins startup also preserved build #1 and its artifacts.
+The job published tag `daa038cd34f8` and `latest`, with digest
+`sha256:e072aa585d6bf0565ae17176d7525ac7bce55603f20b4b37bc592cacc2b169bc`.
+Bandit, source security, and image security reports contained zero findings
+at their configured thresholds. Full original logs and reports are retained
+in Jenkins and in the ignored `evidence/private/jenkins-build-2` folder; the
+[public stage summary](evidence/jenkins-local-latest.json) contains no secrets.
