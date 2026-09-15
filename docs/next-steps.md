@@ -16,7 +16,7 @@ Confirm remote Kubernetes access, version, and node architecture too.
    the approved AWS read identity and verify the four inventory sections.
 3. Install the course Jenkins environment on the builder. Replace the demo
    password, keep the UI behind SSH, and check the agent's Python/Docker tools.
-4. Store a Docker Hub token in Jenkins credential `dockerhub`. Validate the
+4. Store the Docker login as secret-file credential `dockerhub-config`. Validate the
    Jenkinsfile and run every stage, including a real image push. Keep evidence.
 5. Configure and run the Azure equivalent if access is available.
 6. Deploy the raw Kubernetes files and verify them in the browser. Then install
