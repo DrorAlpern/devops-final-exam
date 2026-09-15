@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS Resource Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="masthead"><div class="wrap topbar">
+    <div><p class="eyebrow">DEVOPS COURSE PROJECT</p><h1>AWS Resource Monitor</h1>
+    <p class="subtitle">A read-only view of your infrastructure.</p></div>
+    <span class="region">{{ region }}</span>
+  </div></header>
+  <main class="wrap">
+    {% if demo %}<aside class="notice">Test preview: all resources below are sample data. No AWS account is connected.</aside>{% endif %}
+    {% if error %}
+      <section class="error" role="alert"><h2>Unable to load AWS inventory</h2><p>{{ error }}</p>
+      <p>The web service is running. Inventory will appear when AWS access is configured.</p></section>
+    {% else %}
+      <nav class="summary" aria-label="Resource categories">
+      {% for key, label in [('instances', 'EC2 instances'), ('vpcs', 'VPCs'), ('load_balancers', 'Load balancers'), ('images', 'Owned AMIs')] %}
+        <a class="card" href="#{{ key }}"><span>{{ label }}</span><strong>{{ resources[key]|length }}</strong><small>View inventory &rarr;</small></a>
+      {% endfor %}
+      </nav>
+      {% macro inventory(title, id, rows, columns) %}
+      <section class="panel" id="{{ id }}"><div class="panel-heading"><h2>{{ title }}</h2><span>{{ rows|length }} total</span></div>
+        <div class="table-scroll"><table><thead><tr>{% for key, label in columns %}<th scope="col">{{ label }}</th>{% endfor %}</tr></thead>
+          <tbody>{% for row in rows %}<tr>{% for key, label in columns %}<td>{% if key == 'state' %}<span class="state">{{ row[key] }}</span>{% else %}{{ row[key] }}{% endif %}</td>{% endfor %}</tr>
+          {% else %}<tr><td class="empty" colspan="{{ columns|length }}">No resources found in this category.</td></tr>{% endfor %}</tbody>
+        </table></div>
+      </section>
+      {% endmacro %}
+      {{ inventory('EC2 instances', 'instances', resources.instances, [('id', 'Instance ID'), ('state', 'State'), ('type', 'Type'), ('public_ip', 'Public IP')]) }}
+      {{ inventory('Virtual private clouds', 'vpcs', resources.vpcs, [('id', 'VPC ID'), ('cidr', 'IPv4 CIDR')]) }}
+      {{ inventory('Load balancers', 'load_balancers', resources.load_balancers, [('name', 'Name'), ('dns', 'DNS name')]) }}
+      {{ inventory('Owned machine images', 'images', resources.images, [('id', 'AMI ID'), ('name', 'Name')]) }}
+    {% endif %}
+    <footer>Last request: {{ updated }}<span>Flask &middot; Boto3 &middot; Docker</span></footer>
+  </main>
+</body>
+</html>

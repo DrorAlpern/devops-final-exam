@@ -9,9 +9,13 @@ as Stage 3 of the rolling project. Stage 1 remains in its existing repository.
 ## Current status
 
 Requirements have been reviewed. Implementation and live verification are in
-progress. The course AWS account, the required VPC, Docker Hub access, and the
-remote Kubernetes cluster have not yet been verified. No cloud resources have
+progress. The course AWS account, the required VPC, the remote Kubernetes cluster, and cloud deployment have not yet been verified.
+Docker Hub authentication is connected; the first image publication is pending. No cloud resources have
 been created and no final submission has been sent.
+
+The Flask application now passes seven local tests and container HTTP checks.
+Terraform formatting and configuration validation also pass. See
+[verification](docs/verification.md) for the limits of these checks.
 
 ## Structure
 
