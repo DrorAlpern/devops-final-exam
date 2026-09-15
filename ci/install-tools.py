@@ -1,5 +1,6 @@
 """Install pinned Linux x86_64 validation tools under .tools/bin, without sudo."""
 
+import argparse
 import hashlib
 import io
 import platform
@@ -32,12 +33,30 @@ TOOLS = {
 }
 
 
+KUBERNETES_TOOLS = {
+    "kind": (
+        "https://github.com/kubernetes-sigs/kind/releases/download/v0.33.0/kind-linux-amd64",
+        "aee6151561422756b764a4ae28e7f44cda5af5a9eead3cc9985112b1de8d8e0d",
+        None,
+    ),
+    "kubectl": (
+        "https://dl.k8s.io/release/v1.35.8/bin/linux/amd64/kubectl",
+        "874d5e72dbb819f43cff16bcd1e4f8bac5b7f2361fe1e55049b0a6c676fb0cbf",
+        None,
+    ),
+}
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--kubernetes", action="store_true", help="also install kind and kubectl")
+    args = parser.parse_args()
+    selected = TOOLS | KUBERNETES_TOOLS if args.kubernetes else TOOLS
     if platform.system() != "Linux" or platform.machine() != "x86_64":
         raise SystemExit("This installer supports Linux x86_64 only.")
     destination = ROOT / ".tools" / "bin"
     destination.mkdir(parents=True, exist_ok=True)
-    for name, (url, expected, member) in TOOLS.items():
+    for name, (url, expected, member) in selected.items():
         target = destination / name
         receipt = destination / (name + ".sha256")
         if target.exists() and receipt.exists():

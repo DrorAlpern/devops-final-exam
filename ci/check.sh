@@ -9,7 +9,7 @@ case "${1:-}" in
     ruff format --check app tests ci
     find ci terraform -type f -name '*.sh' -print0 | xargs -0 shellcheck
     hadolint app/Dockerfile ci/jenkins/Controller.Dockerfile ci/jenkins/Agent.Dockerfile
-    yamllint app/compose.yaml azure-pipelines.yml .yamllint.yml k8s ci/jenkins/*.yaml \
+    yamllint app/compose.yaml azure-pipelines.yml .yamllint.yml k8s ci/jenkins/*.yaml ci/local-kubernetes/*.yaml \
       helm/flask-aws-monitor/Chart.yaml helm/flask-aws-monitor/values.yaml
     ;;
   security)

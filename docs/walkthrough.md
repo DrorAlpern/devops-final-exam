@@ -17,8 +17,8 @@ project environments yet.
 3. **Docker:** `app/Dockerfile` packages the code, Python, and its dependencies.
    An image is the saved package; a container is a running instance of it.
 4. **CI:** `Jenkinsfile` describes checkout, parallel checks, tests, build,
-   image scan, and upload. These scripts run locally now; an actual Jenkins
-   job on the builder is still required.
+   image scan, and upload. A local Jenkins job has now run all stages
+   and published the image; the builder still needs its own Jenkins run.
 5. **Kubernetes:** a Deployment keeps the requested number of containers
    running. A Service gives those changing pods a stable access point.
 6. **Helm:** the chart generates those Kubernetes files from values, making

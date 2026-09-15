@@ -1,17 +1,20 @@
+# Local sample-data preview only. Production manifests remain under k8s/.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-aws-monitor
-  namespace: devops-monitor
+  name: monitor-preview
+  namespace: devops-preview
+  annotations:
+    description: Local sample-data preview. No AWS account is queried.
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: flask-aws-monitor
+      app: monitor-preview
   template:
     metadata:
       labels:
-        app: flask-aws-monitor
+        app: monitor-preview
     spec:
       automountServiceAccountToken: false
       nodeSelector:
@@ -35,10 +38,7 @@ spec:
             - name: AWS_DEFAULT_REGION
               value: us-east-1
             - name: AWS_EC2_METADATA_DISABLED
-              value: "true"
-          envFrom:
-            - secretRef:
-                name: aws-credentials
+              value: 'true'
           resources:
             requests:
               cpu: 100m
@@ -50,7 +50,8 @@ spec:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities:
-              drop: [ALL]
+              drop:
+                - ALL
           startupProbe:
             httpGet:
               path: /healthz
@@ -69,8 +70,37 @@ spec:
           volumeMounts:
             - name: temporary
               mountPath: /tmp
+            - name: preview-code
+              mountPath: /checks
+              readOnly: true
+          command:
+            - gunicorn
+            - --chdir
+            - /checks
+            - --bind
+            - 0.0.0.0:5001
+            - --workers
+            - '2'
+            - demo_wsgi:app
       volumes:
         - name: temporary
           emptyDir:
             medium: Memory
             sizeLimit: 64Mi
+        - name: preview-code
+          configMap:
+            name: monitor-preview
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitor-preview
+  namespace: devops-preview
+spec:
+  type: ClusterIP
+  selector:
+    app: monitor-preview
+  ports:
+    - name: http
+      port: 5001
+      targetPort: http
