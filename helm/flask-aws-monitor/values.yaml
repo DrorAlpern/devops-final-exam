@@ -1,0 +1,36 @@
+replicaCount: 1
+fullnameOverride: ""
+
+image:
+  repository: droralpern/flask-aws-monitor
+  tag: latest
+  pullPolicy: Always
+
+aws:
+  region: us-east-1
+  existingSecret: aws-credentials
+
+extraEnv: {}
+
+nodeSelector:
+  kubernetes.io/os: linux
+  kubernetes.io/arch: amd64
+
+service:
+  type: ClusterIP
+  port: 5001
+
+ingress:
+  enabled: false
+  className: ""
+  host: ""
+  path: /
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

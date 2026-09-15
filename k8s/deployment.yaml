@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-aws-monitor
+  namespace: devops-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-aws-monitor
+  template:
+    metadata:
+      labels:
+        app: flask-aws-monitor
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: monitor
+          image: droralpern/flask-aws-monitor:b07205ae146d
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5001
+          env:
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: AWS_EC2_METADATA_DISABLED
+              value: "true"
+          envFrom:
+            - secretRef:
+                name: aws-credentials
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          volumeMounts:
+            - name: temporary
+              mountPath: /tmp
+      volumes:
+        - name: temporary
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
