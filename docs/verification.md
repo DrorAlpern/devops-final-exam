@@ -9,7 +9,7 @@ Terraform 1.16.2 were installed from the official Docker and HashiCorp apt
 repositories. Docker remains accessible through sudo.
 
 The official `hello-world` container ran successfully and was removed after
-it exited. No application container or cloud resource has been deployed yet.
+it exited. The application has since been built and run locally; no cloud resource has been deployed.
 
 ## Terraform configuration
 
@@ -25,7 +25,6 @@ it exited. No application container or cloud resource has been deployed yet.
 
 - AWS account, required VPC, public subnet, and source-IP access.
 - Terraform plan/apply and SSH into the EC2 builder.
-- Flask container build and application behavior.
 - Jenkins and Docker Hub push.
 - Kubernetes and Helm deployment.
 - Azure DevOps bonus pipeline.
@@ -42,3 +41,15 @@ Configuration validation does not prove that AWS deployment will succeed.
 - Container UID 10001 and disabled Flask debug mode on import were verified.
 - The original starter source is intentionally preserved in this checkpoint.
 - EC2 deployment and a browser check against real AWS remain pending.
+
+## Corrected application
+
+- Seven application tests passed on the VM and inside the built container.
+- Ruff and Bandit passed. Docker Compose configuration validation passed.
+- Container HTTP checks: `/healthz` returned 200; the inventory returned a
+  readable 503 without AWS credentials, with no traceback in the response.
+- UID 10001, a read-only root filesystem, and a writable temporary directory
+  were verified in the running container.
+- Sample-data preview checked in a desktop browser and at a 390-pixel width.
+  The narrow EC2 table scrolls horizontally without breaking resource values.
+- These tests use stubs/sample data. They are not live AWS verification.

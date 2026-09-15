@@ -3,10 +3,17 @@ services:
     build: .
     image: flask-aws-monitor:local
     ports:
-      - "127.0.0.1:5001:5001"
+      - "${APP_BIND_ADDRESS:-127.0.0.1}:5001:5001"
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
       AWS_DEFAULT_REGION: us-east-1
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
