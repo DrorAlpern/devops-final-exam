@@ -1,0 +1,8 @@
+# Replace these placeholders only after the course environment is confirmed.
+# Copy to terraform.tfvars, which is excluded from Git.
+aws_account_id   = "REPLACE_WITH_COURSE_ACCOUNT_ID"
+public_subnet_id = "subnet-REPLACE_WITH_PUBLIC_SUBNET"
+allowed_cidr     = "YOUR_PUBLIC_IPV4/32"
+
+# Supply the public key through TF_VAR_ssh_public_key as shown in README.md.
+# Never paste the private key here.
