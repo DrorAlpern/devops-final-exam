@@ -31,3 +31,14 @@ it exited. No application container or cloud resource has been deployed yet.
 - Azure DevOps bonus pipeline.
 
 Configuration validation does not prove that AWS deployment will succeed.
+
+## Docker starter checkpoint
+
+- Python dependencies installed and their versions locked.
+- Compose configuration validation passed.
+- Multi-stage Docker image `flask-aws-monitor:starter` built successfully.
+- The expected missing-`vpcs` NameError was reproduced with an EC2 stub,
+  both on the host and inside the built image.
+- Container UID 10001 and disabled Flask debug mode on import were verified.
+- The original starter source is intentionally preserved in this checkpoint.
+- EC2 deployment and a browser check against real AWS remain pending.
