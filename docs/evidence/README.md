@@ -6,6 +6,8 @@ remote course cluster.
 
 - [Jenkins build](jenkins-local.json): source commit, every stage result, and
   the image published by the job. Full logs and scan reports remain in Jenkins.
+- [Final Jenkins check](jenkins-local-latest.json): successful rerun after adding
+  the local cluster helpers, with its source commit and published digest.
 - [Kubernetes exercise](kubernetes-local.json): server version, HTTP checks,
   pod replacement, three-replica upgrade, and one-replica rollback.
 
