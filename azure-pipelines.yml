@@ -1,0 +1,88 @@
+trigger:
+  branches:
+    include:
+      - dev
+      - main
+
+pool:
+  vmImage: ubuntu-24.04
+
+variables:
+  imageRepository: droralpern/flask-aws-monitor
+  dockerRegistryServiceConnection: dockerhub
+
+jobs:
+  - job: Lint
+    steps:
+      - checkout: self
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.12'
+      - bash: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements-dev.txt
+          .venv/bin/python ci/install-tools.py
+          bash ci/check.sh lint
+        displayName: Lint Python, shell, Dockerfile, and YAML
+
+  - job: Security
+    steps:
+      - checkout: self
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.12'
+      - bash: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements-dev.txt
+          .venv/bin/python ci/install-tools.py
+          bash ci/check.sh security
+        displayName: Scan source and dependencies
+      - task: PublishPipelineArtifact@1
+        condition: always()
+        inputs:
+          targetPath: reports
+          artifact: source-security
+
+  - job: BuildAndPush
+    dependsOn:
+      - Lint
+      - Security
+    steps:
+      - checkout: self
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.12'
+      - bash: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements-dev.txt
+          .venv/bin/python ci/install-tools.py
+          bash ci/check.sh test
+        displayName: Prepare tools and test application
+      - task: Docker@2
+        inputs:
+          containerRegistry: $(dockerRegistryServiceConnection)
+          repository: $(imageRepository)
+          command: build
+          Dockerfile: app/Dockerfile
+          buildContext: app
+          tags: |
+            $(Build.SourceVersion)
+            latest
+      - bash: bash ci/scan-image.sh
+        displayName: Scan built image before publication
+        env:
+          IMAGE_NAME: $(imageRepository)
+          IMAGE_TAG: $(Build.SourceVersion)
+      - task: Docker@2
+        inputs:
+          containerRegistry: $(dockerRegistryServiceConnection)
+          repository: $(imageRepository)
+          command: push
+          tags: |
+            $(Build.SourceVersion)
+            latest
+      - task: PublishPipelineArtifact@1
+        condition: always()
+        inputs:
+          targetPath: reports
+          artifact: image-security
