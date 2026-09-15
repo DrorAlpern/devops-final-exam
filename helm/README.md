@@ -1,6 +1,8 @@
-# Helm deployment
+# Helm packaging
 
-Planned: an application chart with configurable image, replicas, resources,
-Service settings, credential references, and optional Ingress.
+The application chart is in [flask-aws-monitor](flask-aws-monitor/README.md).
+It was initialized with `helm create`, then reduced to the application
+Deployment, Service, optional Ingress, shared labels, and installation notes.
 
-Status: not implemented. No chart has been installed or validated yet.
+Default and customized manifests pass local validation. No Helm release has
+been installed into a remote cluster yet.

@@ -57,6 +57,7 @@ jobs:
           .venv/bin/pip install -r requirements-dev.txt
           .venv/bin/python ci/install-tools.py
           bash ci/check.sh test
+          bash ci/validate-deployment.sh
         displayName: Prepare tools and test application
       - task: Docker@2
         inputs:

@@ -1,0 +1,11 @@
+The release is {{ .Release.Name }} in namespace {{ .Release.Namespace }}.
+
+Check the rollout:
+  kubectl -n {{ .Release.Namespace }} rollout status deployment/{{ include "monitor.name" . }}
+
+Open a local connection:
+  kubectl -n {{ .Release.Namespace }} port-forward service/{{ include "monitor.name" . }} 5002:{{ .Values.service.port }}
+
+Visit http://127.0.0.1:5002/ on the machine running port-forward.
+A Ready pod confirms web-process health. Verify the inventory page separately
+with approved AWS credentials. No sample data is enabled by this chart.

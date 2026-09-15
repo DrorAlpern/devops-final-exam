@@ -9,7 +9,8 @@ case "${1:-}" in
     ruff format --check app tests ci
     find ci terraform -type f -name '*.sh' -print0 | xargs -0 shellcheck
     hadolint app/Dockerfile
-    yamllint app/compose.yaml azure-pipelines.yml .yamllint.yml
+    yamllint app/compose.yaml azure-pipelines.yml .yamllint.yml k8s \
+      helm/flask-aws-monitor/Chart.yaml helm/flask-aws-monitor/values.yaml
     ;;
   security)
     bandit -r app ci -c pyproject.toml -f json -o reports/bandit.json

@@ -25,7 +25,7 @@ it exited. The application has since been built and run locally; no cloud resour
 
 - AWS account, required VPC, public subnet, and source-IP access.
 - Terraform plan/apply and SSH into the EC2 builder.
-- Jenkins and Docker Hub push.
+- Jenkins execution and a CI-driven Docker Hub push.
 - Kubernetes and Helm deployment.
 - Azure DevOps bonus pipeline.
 
@@ -70,3 +70,22 @@ Configuration validation does not prove that AWS deployment will succeed.
 - Jenkins and Azure pipeline definitions are prepared. Their scripts were
   checked locally; Jenkins declarative validation and actual CI jobs remain
   pending. Docker Hub publication is separate from a successful CI run.
+
+## Docker Hub publication
+
+- Published `droralpern/flask-aws-monitor:b07205ae146d` and `latest`.
+- Registry digest: `sha256:29c91978e04b6ef6bf28aa77f40d994f36f836c998e6d7f722dad9854e69bb9e`.
+- Registry inspection confirmed the digest and Linux amd64 platform.
+- Publication was performed from the development VM, not through Jenkins.
+
+## Kubernetes and Helm
+
+- Helm 4.3.0 strict lint passed.
+- kubeconform 0.8.0 validated eight resources with zero invalid, erroneous,
+  or skipped resources, using Kubernetes 1.35.0 schemas.
+- Checks cover raw manifests, chart defaults, and an override with three
+  replicas, port 8080, LoadBalancer, Ingress, and adjusted memory limits.
+- Invalid zero replicas and enabled Ingress without a host were rejected.
+- The target cluster's version and architecture still need confirmation.
+- No remote rollout, Helm release, upgrade, rollback, or Ingress routing
+  test has taken place yet.

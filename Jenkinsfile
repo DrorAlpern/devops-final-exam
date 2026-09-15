@@ -43,6 +43,9 @@ pipeline {
         stage('Application Tests') {
             steps { sh 'bash ci/check.sh test' }
         }
+        stage('Validate Deployment Files') {
+            steps { sh 'bash ci/validate-deployment.sh' }
+        }
         stage('Build Docker Image') {
             steps { sh 'docker build --pull -t "$IMAGE_NAME:$IMAGE_TAG" app' }
         }
