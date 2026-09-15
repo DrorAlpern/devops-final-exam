@@ -15,11 +15,12 @@ will happen after all required environments have been verified.
 | Flask application | Seven tests, container HTTP checks, sample-data browser preview | Live AWS inventory |
 | Docker image | Built, scanned, and published to Docker Hub | Run on the EC2 builder |
 | Terraform | Formatting, initialization, configuration validation | Course account, plan, apply, SSH |
-| Jenkins / Azure | Pipeline files and their local checks | Actual CI service runs and CI-driven push |
-| Kubernetes / Helm | Strict schema and chart validation, custom values, invalid-input rejection | Remote deployment and browser verification |
+| Jenkins | Local controller/agent run, all stages passed, CI-driven Docker Hub push | Installation and run on the AWS builder |
+| Azure DevOps | Equivalent pipeline prepared | Service connection and actual run |
+| Kubernetes / Helm | Local rollout, HTTP checks, pod recovery, scale-up and rollback, sample-data browser check | Remote course deployment and live AWS inventory |
 
 Published image: [droralpern/flask-aws-monitor](https://hub.docker.com/r/droralpern/flask-aws-monitor),
-tag `b07205ae146d` (also published as `latest`). No cloud resources have been
+verified CI tag `a56aa0c325f4`. No cloud resources have been
 created. See [verification](docs/verification.md) for dated results and limits.
 
 ## Structure
@@ -37,7 +38,7 @@ created. See [verification](docs/verification.md) for dated results and limits.
 ## Local checks
 
 Run these from the repository root on a Linux amd64 development machine
-with Python 3.12, venv support, and ShellCheck:
+with Python 3.12 or 3.13, venv support, and ShellCheck:
 
 ```bash
 python3 -m venv .venv
@@ -53,6 +54,12 @@ The installer verifies pinned tool checksums and uses `.tools/bin`; it does
 not change system permissions. Follow the app README to build and run Docker.
 Without AWS credentials, the real inventory page returns a useful HTTP 503;
 the test-only preview is explicitly labeled as sample data.
+
+## Hands-on environments
+
+- [Local Jenkins](ci/jenkins/README.md): run the pipeline and inspect its stages.
+- [Local Kubernetes](ci/local-kubernetes/README.md): deploy, recover, scale, and roll back.
+- [Short practice session](docs/practice.md): follow the working system and explain it.
 
 ## Git workflow
 

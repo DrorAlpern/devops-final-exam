@@ -1,0 +1,49 @@
+{
+  "verified_on": "2026-09-16",
+  "environment": "kind cluster on devops-lab, not a remote course cluster",
+  "kubernetes": "v1.35.8",
+  "kind": "v0.33.0",
+  "helm": "v4.3.0",
+  "production_http": {
+    "health": 200,
+    "inventory_without_aws": 503
+  },
+  "pod_replacement": "Passed: replacement pod had a new UID and became Ready",
+  "helm_upgrade": {
+    "ready_replicas": 3,
+    "image_tag": "a56aa0c325f4"
+  },
+  "helm_rollback": {
+    "ready_replicas": 1,
+    "image_tag": "b07205ae146d"
+  },
+  "helm_history": [
+    {
+      "revision": 1,
+      "updated": "2026-09-16T00:27:15.191979389+03:00",
+      "status": "superseded",
+      "chart": "flask-aws-monitor-0.1.0",
+      "app_version": "0.1.0",
+      "description": "Install complete"
+    },
+    {
+      "revision": 2,
+      "updated": "2026-09-16T00:27:27.181028078+03:00",
+      "status": "superseded",
+      "chart": "flask-aws-monitor-0.1.0",
+      "app_version": "0.1.0",
+      "description": "Upgrade complete"
+    },
+    {
+      "revision": 3,
+      "updated": "2026-09-16T00:27:42.133764712+03:00",
+      "status": "deployed",
+      "chart": "flask-aws-monitor-0.1.0",
+      "app_version": "0.1.0",
+      "rollback_revision": 1,
+      "description": "Rollback to 1"
+    }
+  ],
+  "sample_preview": "Browser verified through Kubernetes Service; explicitly labeled sample data",
+  "aws_credentials": "Empty local test values only; no live AWS inventory queried"
+}

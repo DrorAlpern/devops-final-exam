@@ -66,3 +66,17 @@ bash ci/check.sh test
 The image-scan script expects a Docker-enabled agent. On this development VM,
 Docker uses sudo; use a separately saved image archive with Trivy if running
 it without a CI agent. No group permissions are changed by these scripts.
+
+## Future AWS builder setup
+
+After the approved EC2 builder is available, inspect and run:
+
+```bash
+sudo bash ci/prepare-builder.sh
+```
+
+The script targets Ubuntu 24.04 amd64. It installs Docker and Compose from the
+[official Docker apt repository](https://docs.docker.com/engine/install/ubuntu/),
+plus Git, Python with venv support, and ShellCheck. It enables Docker without
+changing user group memberships. Only syntax and static analysis have been
+checked here; an actual EC2 installation remains pending.

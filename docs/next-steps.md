@@ -8,6 +8,13 @@ VPC. A personal account cannot be substituted without course guidance.
 Obtain the public subnet, allowed source IP, and approved credentials/roles.
 Confirm remote Kubernetes access, version, and node architecture too.
 
+## Completed while waiting
+
+Local Jenkins completed all stages and published an image. A local kind cluster
+passed production rollout, HTTP checks, pod recovery, and Helm upgrade/rollback.
+These results reduce deployment uncertainty, but do not replace the course
+environments. See [verification](verification.md) for evidence.
+
 ## Cloud and CI verification
 
 1. Review Terraform inputs and plan; create the builder only after the account,
