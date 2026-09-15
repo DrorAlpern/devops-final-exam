@@ -9,6 +9,7 @@ pipeline {
     }
     environment {
         IMAGE_NAME = 'droralpern/flask-aws-monitor'
+        DOCKERHUB_USERNAME = 'droralpern'
     }
     stages {
         stage('Clone Repository') {
@@ -54,8 +55,8 @@ pipeline {
         }
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub',
-                    usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                withCredentials([file(credentialsId: 'dockerhub-config',
+                    variable: 'DOCKER_CONFIG_FILE')]) {
                     sh 'bash ci/push-image.sh'
                 }
             }

@@ -28,21 +28,22 @@ Docker socket; run it only on the dedicated course builder with trusted
 jobs. Do not expose the sample stack's default credentials on the Internet.
 The required EC2 security group does not need a public Jenkins port.
 
-Configure an agent with label `docker`, Python 3.12 with venv support, Git,
-ShellCheck, and Docker build access. Check those prerequisites on the actual
-course agent; the supplied image is not assumed to have current Python.
-The helper installs Hadolint 2.15.1, Trivy 0.74.0, Helm 4.3.0, and kubeconform
-0.8.0 locally under `.tools/bin`, verifying pinned SHA256 checksums.
+The repeatable [local Jenkins lab](jenkins/README.md) runs a controller and a
+separate agent labeled `docker`. The agent has Python 3.13 with venv support,
+Git, ShellCheck, and Docker build access; the application image uses Python
+3.12. The tool installer verifies pinned SHA256 checksums before installing
+Hadolint, Trivy, Helm, and kubeconform under `.tools/bin`.
 
-Create a Jenkins **Username with password** credential with ID `dockerhub`.
-Use your Docker Hub username and a write-capable personal access token as the
-password. Enter the token directly in Jenkins, not in source or chat.
-The VM's interactive Docker login is separate from this CI credential.
+The pipeline binds a **Secret file** credential with ID `dockerhub-config`.
+It contains the Docker CLI login configuration, with permission to push to
+`droralpern/flask-aws-monitor`. In the local lab, JCasC imports the VM's existing,
+authorized Docker login through a read-only Compose secret. The pipeline
+copies that bound file into a private temporary directory and removes the
+copy after the push. Credential contents are never part of the repository.
 
-Create a **Pipeline from SCM** job for this repository, branch `*/dev`, script
-path `Jenkinsfile`. Run it and preserve the stage result, build log, and pushed
-image digest. The job must complete the actual push; local script checks do
-not count as a successful Jenkins run.
+The job uses **Pipeline from SCM**, branch `*/dev`, script `Jenkinsfile`.
+Run every stage and retain the result, scan reports, and pushed image digest.
+The cloud builder still needs its own installation and execution evidence.
 
 ## Azure DevOps
 

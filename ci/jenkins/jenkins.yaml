@@ -1,0 +1,39 @@
+jenkins:
+  systemMessage: "DevOps course lab - local development environment"
+  numExecutors: 0
+  mode: EXCLUSIVE
+  slaveAgentPort: -1
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: dror
+          name: Dror Alpern
+          password: "${admin_password}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  nodes:
+    - permanent:
+        name: docker-agent
+        remoteFS: /home/jenkins/agent
+        numExecutors: 1
+        labelString: docker
+        mode: EXCLUSIVE
+        launcher:
+          inbound: {}
+unclassified:
+  location:
+    url: http://127.0.0.1:18080/
+jobs:
+  - file: /var/jenkins_config/jobs.groovy
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - file:
+              scope: GLOBAL
+              id: dockerhub-config
+              description: Docker Hub login for the course image
+              fileName: config.json
+              secretBytes: "${readFileBase64:/run/secrets/dockerhub_config}"
