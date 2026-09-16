@@ -34,7 +34,7 @@ project environments yet.
 - An HTTP 200 from `/healthz` means the web process answers. The inventory
   page must be checked separately because AWS access can fail.
 - GitHub contains source files. Docker Hub contains the built image. The
-  image tag `b07205ae146d` links the published package to a Git commit.
+  verified image tag `6231053d2dbd` links the published package to its Git commit.
 
 ## What to be ready to explain
 
