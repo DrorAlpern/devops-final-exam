@@ -16,3 +16,6 @@ application returned a readable 503 when no AWS credentials were supplied.
 
 - [Ingress exercise](ingress-local.json): host routing, expected response content,
   static assets, unknown-host rejection, and browser checks through Traefik.
+
+- [Jenkins after Ingress](jenkins-ingress.json): build #3, including the new
+  helper checks, nine deployment resources, and a registry push.

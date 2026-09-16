@@ -164,3 +164,14 @@ The controller and both application routes deployed successfully in kind.
 was tested. The controller is available only through a local port forward;
 no public endpoint or DNS record was created. HTTPS and remote Ingress
 verification remain outside this local HTTP check.
+
+## CI after the Ingress exercise — 16 September 2026
+
+Jenkins build #3 completed every stage against
+`f0605d27af8d4530f185d1d8be551ecbd9e094e7`. All seven application tests and nine
+deployment-schema checks passed. The archived Bandit and Trivy reports
+contained zero findings at the configured thresholds. The job published
+`droralpern/flask-aws-monitor:f0605d27af8d` and `latest`, with digest
+`sha256:563d1966665f873a127337cf7b12c9c1082ca4f5ae1e26dbf7947993209934bf`.
+The [stage record](evidence/jenkins-ingress.json) is public; original logs and
+reports remain in Jenkins and the ignored private evidence folder.

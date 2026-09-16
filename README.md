@@ -20,7 +20,7 @@ will happen after all required environments have been verified.
 | Kubernetes / Helm | Local rollout, recovery, scale-up/rollback, and Ingress routing/browser checks | Remote course deployment and live AWS inventory |
 
 Published image: [droralpern/flask-aws-monitor](https://hub.docker.com/r/droralpern/flask-aws-monitor),
-verified CI tag `a56aa0c325f4`. No cloud resources have been
+verified CI tag `f0605d27af8d`. No cloud resources have been
 created. See [verification](docs/verification.md) for dated results and limits.
 
 ## Structure
