@@ -56,6 +56,9 @@ pipeline {
         stage('Scan Docker Image') {
             steps { sh 'bash ci/scan-image.sh' }
         }
+        stage('Smoke Test Docker Image') {
+            steps { sh 'bash ci/smoke-image.sh' }
+        }
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([file(credentialsId: 'dockerhub-config',

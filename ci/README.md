@@ -5,15 +5,23 @@ structure and replaces its placeholder commands with actual checks.
 
 1. Check out the configured SCM branch.
 2. Create a Python environment and install pinned validation tools.
-3. Run linting and source/dependency security scans in parallel.
+3. Run linting, source/dependency checks, and a repository-wide secret scan in parallel.
 4. Run Python tests, mocked Terraform plans, and deployment-file validation.
-5. Build the image and scan it.
+5. Build, scan, and smoke-test the image before publication.
 6. Publish the commit tag and `latest` to `droralpern/flask-aws-monitor`.
 
 Ruff, ShellCheck, Hadolint, and yamllint perform linting. Bandit and Trivy
-perform security checks. HIGH or CRITICAL Trivy findings fail the build;
-there is no blanket `ignore-unfixed` option. JSON reports are retained as
-build artifacts, alongside the Terraform JUnit XML report. Report paths are ignored by Git.
+perform security checks. The source scan fails on HIGH or CRITICAL findings;
+a separate Trivy scan checks the entire public repository for secrets at any
+severity. It skips only Git history and local/generated directories. There is
+no blanket `ignore-unfixed` option. JSON reports and the Terraform JUnit XML
+report are retained as build artifacts. Report paths are ignored by Git.
+
+The image smoke test starts the exact image built by CI with no network or AWS
+credentials. It checks that `/healthz` returns 200 and the inventory page
+returns a helpful 503 without a traceback. The temporary container is removed
+afterward, including when a check fails. This verifies application startup and
+failure handling; a live AWS inventory still needs the course account.
 
 ## Jenkins setup
 

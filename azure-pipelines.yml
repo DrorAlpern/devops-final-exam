@@ -36,7 +36,7 @@ jobs:
           .venv/bin/pip install -r requirements-dev.txt
           .venv/bin/python ci/install-tools.py
           bash ci/check.sh security
-        displayName: Scan source and dependencies
+        displayName: Scan source, dependencies, and repository secrets
       - task: PublishPipelineArtifact@1
         condition: always()
         inputs:
@@ -72,6 +72,11 @@ jobs:
             latest
       - bash: bash ci/scan-image.sh
         displayName: Scan built image before publication
+        env:
+          IMAGE_NAME: $(imageRepository)
+          IMAGE_TAG: $(Build.SourceVersion)
+      - bash: bash ci/smoke-image.sh
+        displayName: Smoke test built image without AWS access
         env:
           IMAGE_NAME: $(imageRepository)
           IMAGE_TAG: $(Build.SourceVersion)
