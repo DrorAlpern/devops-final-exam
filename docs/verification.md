@@ -189,3 +189,13 @@ reports remain in Jenkins and the ignored private evidence folder.
 
 These checks use test fixtures. No AWS account was contacted, no resources
 were created, and the live account/network preflight remains pending.
+
+Jenkins build #4 subsequently passed every stage against `6231053d2dbdec6159f95dfff9c77468b8927149`.
+It ran all 22 Python tests and all ten Terraform tests, archived the
+Terraform XML report, and completed the image build, scan, and push.
+Bandit and the configured Trivy scans reported zero findings. Docker Hub
+inspection confirmed tag `6231053d2dbd` and registry digest
+`sha256:3942410e0f108753ac4ebf268602c9112a7f45b2bf9464f48ec429e4ba79c0ad`.
+The [reviewed build record](evidence/jenkins-aws-readiness.json) contains the
+stage results. Full logs and reports remain in Jenkins and the ignored
+private evidence directory.

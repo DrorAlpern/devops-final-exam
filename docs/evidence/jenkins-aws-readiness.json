@@ -1,0 +1,89 @@
+{
+  "verified_on": "2026-09-16",
+  "environment": "Local devops-lab Jenkins; not the AWS builder",
+  "build": 4,
+  "result": "SUCCESS",
+  "commit": "6231053d2dbdec6159f95dfff9c77468b8927149",
+  "image_tag": "6231053d2dbd",
+  "image_digest": "sha256:3942410e0f108753ac4ebf268602c9112a7f45b2bf9464f48ec429e4ba79c0ad",
+  "python_tests": {
+    "application": 7,
+    "aws_preflight": 15,
+    "passed": 22
+  },
+  "terraform_tests": {
+    "tests": 10,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0
+  },
+  "terraform_provider": "Mocked AWS provider; all runs use command = plan",
+  "live_aws_checked": false,
+  "scan_findings": {
+    "image-security.json": 0,
+    "source-security.json": 0,
+    "bandit.json": 0
+  },
+  "stages": [
+    {
+      "name": "Clone Repository",
+      "status": "SUCCESS",
+      "duration_ms": 2974
+    },
+    {
+      "name": "Prepare Tools",
+      "status": "SUCCESS",
+      "duration_ms": 4803
+    },
+    {
+      "name": "Parallel Checks",
+      "status": "SUCCESS",
+      "duration_ms": 200
+    },
+    {
+      "name": "Linting",
+      "status": "SUCCESS",
+      "duration_ms": 717
+    },
+    {
+      "name": "Security Scan",
+      "status": "SUCCESS",
+      "duration_ms": 490
+    },
+    {
+      "name": "Python Tests",
+      "status": "SUCCESS",
+      "duration_ms": 2482
+    },
+    {
+      "name": "Offline Terraform Tests",
+      "status": "SUCCESS",
+      "duration_ms": 23375
+    },
+    {
+      "name": "Validate Deployment Files",
+      "status": "SUCCESS",
+      "duration_ms": 1354
+    },
+    {
+      "name": "Build Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 3028
+    },
+    {
+      "name": "Scan Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 993
+    },
+    {
+      "name": "Push to Docker Hub",
+      "status": "SUCCESS",
+      "duration_ms": 8559
+    },
+    {
+      "name": "Declarative: Post Actions",
+      "status": "SUCCESS",
+      "duration_ms": 350
+    }
+  ]
+}
