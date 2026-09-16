@@ -199,3 +199,17 @@ inspection confirmed tag `6231053d2dbd` and registry digest
 The [reviewed build record](evidence/jenkins-aws-readiness.json) contains the
 stage results. Full logs and reports remain in Jenkins and the ignored
 private evidence directory.
+
+## CI release checks — 17 September 2026
+
+Jenkins build #5 passed every stage against commit
+`47b6bf08a303eaddd438c09758ae1257e6471c5a`. It ran 22 Python tests and
+ten mocked Terraform tests. The repository-wide secret scan, Bandit, and
+configured source/image scans reported zero findings. Before publication, the
+built image passed an isolated smoke test: health returned HTTP 200 and the
+inventory returned a helpful HTTP 503 without a traceback when AWS access was
+absent. Docker Hub inspection confirmed tag `47b6bf08a303` at digest
+`sha256:03edca9f457911b428ef7147050cb39b95afb03f0abff520316d7214dfc4c9e3`
+for Linux amd64. The [reviewed build record](evidence/jenkins-release-gates.json)
+contains stage results; raw logs and reports are retained privately. No live
+AWS account was contacted and no cloud deployment was attempted.
