@@ -13,12 +13,15 @@ Confirm remote Kubernetes access, version, and node architecture too.
 Local Jenkins completed all stages and published an image. A local kind cluster
 passed production rollout, HTTP checks, pod recovery, and Helm upgrade/rollback.
 A local Ingress controller also passed hostname routing and browser checks.
+Ten Terraform mock tests and fifteen preflight unit tests also pass locally.
+The [AWS preflight](../terraform/PREFLIGHT.md) is ready for the confirmed
+account and subnet, but has not contacted a live account.
 These results reduce deployment uncertainty, but do not replace the course
 environments. See [verification](verification.md) for evidence.
 
 ## Cloud and CI verification
 
-1. Review Terraform inputs and plan; create the builder only after the account,
+1. Run the AWS preflight, review Terraform inputs and plan; create the builder only after the account,
    network, and expected cost are agreed. Verify SSH and restricted port 5001.
 2. Install Docker and Compose on that builder. Run the published monitor with
    the approved AWS read identity and verify the four inventory sections.

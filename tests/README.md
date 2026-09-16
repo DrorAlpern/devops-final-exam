@@ -10,17 +10,26 @@ python3 -m venv .venv
 .venv/bin/bandit -r app -c pyproject.toml
 ```
 
-The seven tests cover the four resource categories, pagination, empty
+The seven application tests cover the four resource categories, pagination, empty
 inventory, missing credentials, denied permissions, partial failures, HTML
 escaping, and health checks. Botocore Stubber supplies API responses and
 checks request parameters. No real AWS account is contacted.
+
+Fifteen additional tests cover the read-only [AWS preflight](../terraform/PREFLIGHT.md).
+They check account and routing decisions, including main-route fallback,
+pagination, NAT and blackhole routes, missing credentials, and CLI exit codes.
+The repository test command runs all 22 Python tests. The application image
+contains only the app, so its container test command selects `test_app.py`.
+
+Ten separate mocked Terraform plan tests run through `bash ci/check-terraform.sh`.
+They check the infrastructure rules without creating resources.
 
 Run the same application tests inside the built image:
 
 ```bash
 sudo docker build -t flask-aws-monitor:dev app
 sudo docker run --rm -v "$PWD/tests:/checks:ro" \
-  flask-aws-monitor:dev python -m unittest discover -s /checks -p 'test_*.py' -v
+  flask-aws-monitor:dev python -m unittest discover -s /checks -p 'test_app.py' -v
 ```
 
 ## Sample-data browser preview

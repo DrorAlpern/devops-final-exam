@@ -14,7 +14,7 @@ will happen after all required environments have been verified.
 | --- | --- | --- |
 | Flask application | Seven tests, container HTTP checks, sample-data browser preview | Live AWS inventory |
 | Docker image | Built, scanned, and published to Docker Hub | Run on the EC2 builder |
-| Terraform | Formatting, initialization, configuration validation | Course account, plan, apply, SSH |
+| Terraform | Validation and ten mocked plan tests; preflight tool tested with stubs | Course account, plan, apply, SSH |
 | Jenkins | Local controller/agent run, all stages passed, CI-driven Docker Hub push | Installation and run on the AWS builder |
 | Azure DevOps | Equivalent pipeline prepared | Service connection and actual run |
 | Kubernetes / Helm | Local rollout, recovery, scale-up/rollback, and Ingress routing/browser checks | Remote course deployment and live AWS inventory |
@@ -47,6 +47,7 @@ python3 -m venv .venv
 bash ci/check.sh lint
 bash ci/check.sh security
 bash ci/check.sh test
+bash ci/check-terraform.sh
 bash ci/validate-deployment.sh
 ```
 

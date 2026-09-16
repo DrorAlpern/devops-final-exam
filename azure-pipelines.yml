@@ -57,8 +57,9 @@ jobs:
           .venv/bin/pip install -r requirements-dev.txt
           .venv/bin/python ci/install-tools.py
           bash ci/check.sh test
+          bash ci/check-terraform.sh
           bash ci/validate-deployment.sh
-        displayName: Prepare tools and test application
+        displayName: Test Python, Terraform, and deployment files
       - task: Docker@2
         inputs:
           containerRegistry: $(dockerRegistryServiceConnection)
