@@ -19,3 +19,9 @@ application returned a readable 503 when no AWS credentials were supplied.
 
 - [Jenkins after Ingress](jenkins-ingress.json): build #3, including the new
   helper checks, nine deployment resources, and a registry push.
+
+## AWS readiness tests
+
+[Local Jenkins build #4](jenkins-aws-readiness.json) records the 22 Python
+tests and ten mocked Terraform plan tests, along with the image publication
+and scan results. The live AWS account and network have not been checked.
