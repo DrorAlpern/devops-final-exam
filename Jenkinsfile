@@ -41,8 +41,11 @@ pipeline {
                 }
             }
         }
-        stage('Application Tests') {
+        stage('Python Tests') {
             steps { sh 'bash ci/check.sh test' }
+        }
+        stage('Offline Terraform Tests') {
+            steps { sh 'bash ci/check-terraform.sh' }
         }
         stage('Validate Deployment Files') {
             steps { sh 'bash ci/validate-deployment.sh' }
@@ -64,7 +67,7 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: 'reports/*.json', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'reports/*.json,reports/*.xml', allowEmptyArchive: true
         }
         success { echo 'Checks, image build, security scan, and Docker Hub publication passed.' }
         failure { echo 'Pipeline failed. Review the failing stage and archived scan reports.' }

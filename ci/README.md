@@ -6,13 +6,14 @@ structure and replaces its placeholder commands with actual checks.
 1. Check out the configured SCM branch.
 2. Create a Python environment and install pinned validation tools.
 3. Run linting and source/dependency security scans in parallel.
-4. Run application tests, build the image, and scan the built image.
-5. Publish the commit tag and `latest` to `droralpern/flask-aws-monitor`.
+4. Run Python tests, mocked Terraform plans, and deployment-file validation.
+5. Build the image and scan it.
+6. Publish the commit tag and `latest` to `droralpern/flask-aws-monitor`.
 
 Ruff, ShellCheck, Hadolint, and yamllint perform linting. Bandit and Trivy
 perform security checks. HIGH or CRITICAL Trivy findings fail the build;
 there is no blanket `ignore-unfixed` option. JSON reports are retained as
-build artifacts. Report paths are ignored by Git.
+build artifacts, alongside the Terraform JUnit XML report. Report paths are ignored by Git.
 
 ## Jenkins setup
 
@@ -32,7 +33,7 @@ The repeatable [local Jenkins lab](jenkins/README.md) runs a controller and a
 separate agent labeled `docker`. The agent has Python 3.13 with venv support,
 Git, ShellCheck, and Docker build access; the application image uses Python
 3.12. The tool installer verifies pinned SHA256 checksums before installing
-Hadolint, Trivy, Helm, and kubeconform under `.tools/bin`.
+Hadolint, Trivy, Helm, kubeconform, and Terraform under `.tools/bin`.
 
 The pipeline binds a **Secret file** credential with ID `dockerhub-config`.
 It contains the Docker CLI login configuration, with permission to push to
@@ -61,11 +62,16 @@ Azure execution and service-connection setup are still pending.
 bash ci/check.sh lint
 bash ci/check.sh security
 bash ci/check.sh test
+bash ci/check-terraform.sh
 ```
 
 The image-scan script expects a Docker-enabled agent. On this development VM,
 Docker uses sudo; use a separately saved image archive with Trivy if running
 it without a CI agent. No group permissions are changed by these scripts.
+
+The preflight unit tests and Terraform mock tests run without an AWS identity.
+The live [AWS preflight](../terraform/PREFLIGHT.md) is a separate, manual read
+check after course access arrives; CI does not attempt it.
 
 ## Future AWS builder setup
 

@@ -6,10 +6,16 @@ import io
 import platform
 import tarfile
 import urllib.request
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = {
+    "terraform": (
+        "https://releases.hashicorp.com/terraform/1.16.2/terraform_1.16.2_linux_amd64.zip",
+        "0d17011f0c4664539b164b044903d04e296c86c13cb9f28040076c65cfb3985a",
+        "terraform",
+    ),
     "helm": (
         "https://get.helm.sh/helm-v4.3.0-linux-amd64.tar.gz",
         "86584a54def73570558f66f5111cc53dfed56689637ae32c1201205d494f54fb",
@@ -70,7 +76,10 @@ def main():
         if hashlib.sha256(archive).hexdigest() != expected:
             raise SystemExit(f"Checksum mismatch for {name}; nothing was installed.")
         binary = archive
-        if member:
+        if member and url.endswith(".zip"):
+            with zipfile.ZipFile(io.BytesIO(archive)) as bundle:
+                binary = bundle.read(member)
+        elif member:
             with tarfile.open(fileobj=io.BytesIO(archive), mode="r:gz") as bundle:
                 binary = bundle.extractfile(member).read()
         target.write_bytes(binary)

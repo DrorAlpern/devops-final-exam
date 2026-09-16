@@ -24,7 +24,7 @@ it exited. The application has since been built and run locally; no cloud resour
 ## Not yet verified
 
 - AWS account, required VPC, public subnet, and source-IP access.
-- Terraform plan/apply and SSH into the EC2 builder.
+- Live Terraform plan/apply and SSH into the EC2 builder.
 - Jenkins installation and execution on the AWS builder.
 - Kubernetes and Helm deployment on the remote course cluster.
 - Azure DevOps bonus pipeline.
@@ -175,3 +175,17 @@ contained zero findings at the configured thresholds. The job published
 `sha256:563d1966665f873a127337cf7b12c9c1082ca4f5ae1e26dbf7947993209934bf`.
 The [stage record](evidence/jenkins-ingress.json) is public; original logs and
 reports remain in Jenkins and the ignored private evidence folder.
+
+## AWS readiness checks — 16 September 2026
+
+- Terraform 1.16.2 and the locked AWS provider 6.64.0 passed formatting,
+  initialization without a backend, and configuration validation.
+- All ten mocked plan tests passed. These cover restricted access,
+  encryption, IMDSv2, and rejection of invalid inputs or the wrong VPC.
+- All 22 Python tests passed: seven application tests and fifteen new
+  preflight tests using Botocore Stubber, including pagination and failures.
+- The pinned Terraform archive was verified against the official SHA256
+  checksum before installation in the project tools directory.
+
+These checks use test fixtures. No AWS account was contacted, no resources
+were created, and the live account/network preflight remains pending.
