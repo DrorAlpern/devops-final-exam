@@ -1,0 +1,50 @@
+# Local kind lab only. The Service is reachable through a loopback port forward.
+image:
+  registry: docker.io
+  repository: library/traefik
+  tag: v3.7.13
+  digest: sha256:f86a2cab1b5c649070c49f883c743dd32d8485a56e3368c5f93b9e91f1e91259
+
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+providers:
+  kubernetesCRD:
+    enabled: false
+  kubernetesIngress:
+    enabled: true
+    ingressClass: lab-traefik
+    namespaces:
+      - devops-helm-local
+      - devops-preview
+    publishedService:
+      enabled: false
+  kubernetesGateway:
+    enabled: false
+
+ingressClass:
+  enabled: true
+  isDefaultClass: false
+  name: lab-traefik
+
+api:
+  dashboard: false
+  insecure: false
+
+service:
+  spec:
+    type: ClusterIP
+
+ports:
+  websecure:
+    expose:
+      default: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 192Mi

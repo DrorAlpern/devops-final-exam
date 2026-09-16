@@ -13,3 +13,6 @@ remote course cluster.
 
 The sample-data browser preview is a separate test deployment. The production
 application returned a readable 503 when no AWS credentials were supplied.
+
+- [Ingress exercise](ingress-local.json): host routing, expected response content,
+  static assets, unknown-host rejection, and browser checks through Traefik.

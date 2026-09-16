@@ -12,6 +12,7 @@ Confirm remote Kubernetes access, version, and node architecture too.
 
 Local Jenkins completed all stages and published an image. A local kind cluster
 passed production rollout, HTTP checks, pod recovery, and Helm upgrade/rollback.
+A local Ingress controller also passed hostname routing and browser checks.
 These results reduce deployment uncertainty, but do not replace the course
 environments. See [verification](verification.md) for evidence.
 
