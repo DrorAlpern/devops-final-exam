@@ -46,7 +46,18 @@ The separate sample preview shows the intended tables and carries a visible
 sample-data notice. It helps review the layout without pretending to have a
 working cloud connection.
 
-## 5. Explain what remains
+## 5. Follow a request through Ingress
+
+Open `http://preview.localhost:15004` while the local tunnel is running.
+The hostname selects an Ingress rule. Traefik sends the request to the preview
+Service, which selects the ready pod. The same controller routes
+`monitor.localhost` to the separate Helm application Service.
+
+The [Ingress exercise](../ci/local-kubernetes/INGRESS.md) shows the commands
+and expected responses. Explain why an unknown hostname returns 404, while
+the application's missing-AWS-access page returns 503.
+
+## 6. Explain what remains
 
 The required VPC belongs to a particular AWS account. Copying its ID into
 another account does not create access to that network. Once course access

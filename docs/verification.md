@@ -143,3 +143,24 @@ Bandit, source security, and image security reports contained zero findings
 at their configured thresholds. Full original logs and reports are retained
 in Jenkins and in the ignored `evidence/private/jenkins-build-2` folder; the
 [public stage summary](evidence/jenkins-local-latest.json) contains no secrets.
+
+## Local Ingress execution — 16 September 2026
+
+The official Traefik chart 41.5.0 was downloaded and checksum-verified. Its
+Traefik 3.7.13 image is pinned by digest. Six rendered controller resources
+and the sample preview Ingress passed strict Kubernetes schema validation.
+The controller and both application routes deployed successfully in kind.
+
+- Production hostname: health 200 and inventory 503 with the expected AWS
+  access message. No sample data appeared on that route.
+- Preview hostname: inventory 200, a visible sample-data notice, all four
+  resource sections, and the expected application security header.
+- The stylesheet returned 200 through the Ingress.
+- An unconfigured hostname returned the controller's 404 response.
+- Both hostnames were checked in the workstation browser through SSH.
+
+[Recorded HTTP results](evidence/ingress-local.json) and the
+[repeatable exercise](../ci/local-kubernetes/INGRESS.md) describe exactly what
+was tested. The controller is available only through a local port forward;
+no public endpoint or DNS record was created. HTTPS and remote Ingress
+verification remain outside this local HTTP check.

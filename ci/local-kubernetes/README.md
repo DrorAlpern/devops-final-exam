@@ -71,6 +71,8 @@ and stored node state are retained. If the lab is no longer needed, kind's
 `delete cluster --name devops-local` command removes only this named lab;
 that discards the local workloads and Helm history.
 
-The remote course cluster, AWS-backed inventory, and an Ingress controller
-are still separate deployment checks. A local browser result is not evidence
-that those environments have been verified.
+The optional [Ingress exercise](INGRESS.md) adds hostname-based access and
+checks both application routes through a real local controller.
+
+The remote course cluster and AWS-backed inventory still need their target
+environments. A local browser result does not verify those environments.

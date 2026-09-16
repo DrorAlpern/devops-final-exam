@@ -69,5 +69,7 @@ revision from the history:
 ```
 
 Replace `REVISION` with a revision number that actually exists. Remote install,
-upgrade, rollback, and Ingress routing have not been exercised yet. Enabling a
+upgrade, rollback, and Ingress routing still require the remote target. The
+[local Ingress exercise](../../ci/local-kubernetes/INGRESS.md) has verified this
+chart's routing through Traefik. Enabling a
 cloud LoadBalancer may create billable resources; the default is ClusterIP.

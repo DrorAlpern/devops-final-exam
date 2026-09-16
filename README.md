@@ -17,7 +17,7 @@ will happen after all required environments have been verified.
 | Terraform | Formatting, initialization, configuration validation | Course account, plan, apply, SSH |
 | Jenkins | Local controller/agent run, all stages passed, CI-driven Docker Hub push | Installation and run on the AWS builder |
 | Azure DevOps | Equivalent pipeline prepared | Service connection and actual run |
-| Kubernetes / Helm | Local rollout, HTTP checks, pod recovery, scale-up and rollback, sample-data browser check | Remote course deployment and live AWS inventory |
+| Kubernetes / Helm | Local rollout, recovery, scale-up/rollback, and Ingress routing/browser checks | Remote course deployment and live AWS inventory |
 
 Published image: [droralpern/flask-aws-monitor](https://hub.docker.com/r/droralpern/flask-aws-monitor),
 verified CI tag `a56aa0c325f4`. No cloud resources have been
@@ -59,6 +59,7 @@ the test-only preview is explicitly labeled as sample data.
 
 - [Local Jenkins](ci/jenkins/README.md): run the pipeline and inspect its stages.
 - [Local Kubernetes](ci/local-kubernetes/README.md): deploy, recover, scale, and roll back.
+- [Local Ingress](ci/local-kubernetes/INGRESS.md): route two hostnames through Traefik.
 - [Short practice session](docs/practice.md): follow the working system and explain it.
 
 ## Git workflow
