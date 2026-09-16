@@ -11,8 +11,8 @@ built from that code. The Linux VM runs Jenkins, Docker, and the local kind
 cluster. AWS will later provide the course builder and real inventory data.
 
 Open `Jenkinsfile` and find the parallel Linting and Security Scan stages.
-A failed required check stops publication. In Jenkins build #4, follow one
-commit from checkout to its matching Docker Hub tag `6231053d2dbd`.
+A failed required check stops publication. In Jenkins build #5, follow one
+commit from checkout to its matching Docker Hub tag `47b6bf08a303`.
 
 ## 2. See what Kubernetes keeps running
 

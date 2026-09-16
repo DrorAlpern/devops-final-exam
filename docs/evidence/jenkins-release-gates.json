@@ -1,0 +1,101 @@
+{
+  "verified_on": "2026-09-17",
+  "environment": "Local devops-lab Jenkins; not the AWS builder",
+  "build": 5,
+  "result": "SUCCESS",
+  "commit": "47b6bf08a303eaddd438c09758ae1257e6471c5a",
+  "image_tag": "47b6bf08a303",
+  "image_digest": "sha256:03edca9f457911b428ef7147050cb39b95afb03f0abff520316d7214dfc4c9e3",
+  "python_tests": {
+    "application": 7,
+    "aws_preflight": 15,
+    "passed": 22
+  },
+  "terraform_tests": {
+    "tests": 10,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0
+  },
+  "repository_secret_findings": 0,
+  "container_smoke": {
+    "network": "none",
+    "health_http": 200,
+    "inventory_without_aws_http": 503,
+    "traceback_exposed": false
+  },
+  "live_aws_checked": false,
+  "scan_findings": {
+    "source-security.json": 0,
+    "image-security.json": 0,
+    "repository-secrets.json": 0,
+    "bandit.json": 0
+  },
+  "stages": [
+    {
+      "name": "Clone Repository",
+      "status": "SUCCESS",
+      "duration_ms": 2669
+    },
+    {
+      "name": "Prepare Tools",
+      "status": "SUCCESS",
+      "duration_ms": 1793
+    },
+    {
+      "name": "Parallel Checks",
+      "status": "SUCCESS",
+      "duration_ms": 187
+    },
+    {
+      "name": "Linting",
+      "status": "SUCCESS",
+      "duration_ms": 722
+    },
+    {
+      "name": "Security Scan",
+      "status": "SUCCESS",
+      "duration_ms": 12694
+    },
+    {
+      "name": "Python Tests",
+      "status": "SUCCESS",
+      "duration_ms": 2220
+    },
+    {
+      "name": "Offline Terraform Tests",
+      "status": "SUCCESS",
+      "duration_ms": 4961
+    },
+    {
+      "name": "Validate Deployment Files",
+      "status": "SUCCESS",
+      "duration_ms": 1349
+    },
+    {
+      "name": "Build Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 3030
+    },
+    {
+      "name": "Scan Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 987
+    },
+    {
+      "name": "Smoke Test Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 2316
+    },
+    {
+      "name": "Push to Docker Hub",
+      "status": "SUCCESS",
+      "duration_ms": 8219
+    },
+    {
+      "name": "Declarative: Post Actions",
+      "status": "SUCCESS",
+      "duration_ms": 332
+    }
+  ]
+}

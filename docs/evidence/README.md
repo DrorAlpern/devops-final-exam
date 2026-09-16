@@ -25,3 +25,9 @@ application returned a readable 503 when no AWS credentials were supplied.
 [Local Jenkins build #4](jenkins-aws-readiness.json) records the 22 Python
 tests and ten mocked Terraform plan tests, along with the image publication
 and scan results. The live AWS account and network have not been checked.
+
+## Release gates
+
+[Local Jenkins build #5](jenkins-release-gates.json) records the repository-wide
+secret scan and isolated image smoke test before the Docker Hub push. It also
+includes the Python/Terraform test counts, scan results, and image digest.
