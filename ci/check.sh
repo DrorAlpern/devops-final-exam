@@ -16,6 +16,9 @@ case "${1:-}" in
     bandit -r app ci -c pyproject.toml -f json -o reports/bandit.json
     trivy fs --no-progress --scanners vuln,secret --severity HIGH,CRITICAL --exit-code 1 \
       --format json --output reports/source-security.json app
+    trivy fs --no-progress --scanners secret --exit-code 1 \
+      --skip-dirs .git,.venv,.tools,reports,evidence/private \
+      --format json --output reports/repository-secrets.json .
     ;;
   test)
     python -m unittest discover -s tests -p 'test_*.py' -v
