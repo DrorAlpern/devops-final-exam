@@ -1,6 +1,7 @@
 # Project notes
 
 - [Requirements](requirements.md): the supplied brief and open dependencies.
+- [Architecture](architecture.md): how source, CI, images, AWS, and Kubernetes connect.
 - [Walkthrough](walkthrough.md): what each component does and where it runs.
 - [Verification](verification.md): completed checks and their limits.
 - [Remaining work](next-steps.md): course environment access and final delivery.
