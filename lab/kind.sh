@@ -8,7 +8,6 @@ h() { helm --kube-context kind-devops-submission -n devops-submission "$@"; }
 case "${1:-}" in
   up)
     bash lab/start-kind.sh
-    image="droralpern/flask-aws-monitor:328e0bbe206c"
     k apply -f lab/k8s/namespace.yaml -f lab/k8s/moto.yaml
     k rollout status deployment/moto --timeout=180s
     k create configmap terraform-config --from-file=lab/terraform/main.tf \
@@ -21,7 +20,8 @@ case "${1:-}" in
     fi
     k logs job/terraform-local
     k apply -f lab/k8s/service.yaml
-    kubectl set image --local -f lab/k8s/monitor.yaml "monitor=$image" -o yaml | k apply -f -
+    k apply -f lab/k8s/monitor.yaml
+    image=$(k get deployment monitor -o jsonpath='{.spec.template.spec.containers[0].image}')
     k rollout status deployment/monitor --timeout=180s
     k exec -i deployment/monitor -- python - < lab/verify.py
     k create secret generic local-aws --from-literal=AWS_ACCESS_KEY_ID=local-lab \

@@ -11,12 +11,14 @@ For the tested local environment, follow [the lab guide](../lab/README.md).
 To build the application alone from the repository root:
 
 ```bash
-sudo docker compose -f app/compose.yaml up -d --build
+docker compose -f app/compose.yaml up -d --build
 curl -f http://127.0.0.1:5001/healthz
 ```
 
 The inventory page needs AWS credentials or the lab's Moto endpoint. Compose
-passes AWS credential environment variables from the shell. `iam-read-policy.json`
+passes AWS credential environment variables from the shell. If Docker needs
+sudo, use `sudo --preserve-env=AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_SESSION_TOKEN`
+before the Docker command so those exported values are available. `iam-read-policy.json`
 lists the read permissions needed in AWS. Keep actual credentials outside Git.
 An unavailable API produces HTTP 503; an empty successful query stays HTTP 200.
 The health endpoint only checks the web process.

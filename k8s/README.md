@@ -1,6 +1,6 @@
 # Kubernetes deployment
 
-These manifests run the published `a56aa0c325f4` image in the
+These manifests run the published `6896b8875466` image in the
 `devops-monitor` namespace. The image is built for Linux amd64. Confirm that
 the cluster has compatible nodes before deployment.
 
