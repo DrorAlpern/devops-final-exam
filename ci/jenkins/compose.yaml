@@ -1,0 +1,62 @@
+name: devops-jenkins
+services:
+  controller:
+    build:
+      context: .
+      dockerfile: Controller.Dockerfile
+    image: devops-jenkins-controller:2.568.3
+    ports:
+      - "127.0.0.1:18080:8080"
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Xms256m -Xmx512m"
+      CASC_JENKINS_CONFIG: /var/jenkins_config/jenkins.yaml
+      SECRETS: /run/secrets
+    secrets:
+      - admin_password
+      - dockerhub_config
+    volumes:
+      - controller_data:/var/jenkins_home
+      - ./jenkins.yaml:/var/jenkins_config/jenkins.yaml:ro
+      - ./jobs.groovy:/var/jenkins_config/jobs.groovy:ro
+    mem_limit: 1g
+    pids_limit: 512
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, http://127.0.0.1:8080/login]
+      interval: 10s
+      timeout: 3s
+      start_period: 90s
+      retries: 6
+  agent:
+    build:
+      context: .
+      dockerfile: Agent.Dockerfile
+    image: devops-jenkins-agent:local
+    environment:
+      JENKINS_URL: http://controller:8080/
+      JENKINS_AGENT_NAME: docker-agent
+      JENKINS_WEB_SOCKET: "true"
+      JENKINS_JAVA_OPTS: "-Xms64m -Xmx256m"
+    secrets:
+      - agent_secret
+    group_add:
+      - "${DOCKER_GID:?Set the Docker socket group ID}"
+    volumes:
+      - agent_data:/home/jenkins/agent
+      - /var/run/docker.sock:/var/run/docker.sock
+    mem_limit: 1536m
+    pids_limit: 512
+    restart: unless-stopped
+    depends_on:
+      controller:
+        condition: service_healthy
+secrets:
+  dockerhub_config:
+    file: ${DOCKER_CONFIG_DIR:?Set DOCKER_CONFIG_DIR}/config.json
+  admin_password:
+    file: ${JENKINS_SECRET_DIR:?Set JENKINS_SECRET_DIR}/admin_password
+  agent_secret:
+    file: ${JENKINS_SECRET_DIR:?Set JENKINS_SECRET_DIR}/agent_secret
+volumes:
+  controller_data:
+  agent_data:

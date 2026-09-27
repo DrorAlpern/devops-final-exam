@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: terraform-state
+  namespace: devops-submission
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: terraform-local
+  namespace: devops-submission
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 600
+  template:
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      containers:
+        - name: terraform
+          image: hashicorp/terraform:1.16.2@sha256:c3308fcbb530627c102c4c4b993e226b202429084328c3cc505cc2a69342e883
+          command: [/bin/sh, -ec]
+          args:
+            - terraform init -input=false -lockfile=readonly && terraform apply -input=false -auto-approve
+          workingDir: /config
+          env:
+            - name: TF_DATA_DIR
+              value: /state/data
+            - name: TF_IN_AUTOMATION
+              value: "true"
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "1", memory: 768Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: state
+              mountPath: /state
+      volumes:
+        - name: config
+          configMap:
+            name: terraform-config
+        - name: state
+          persistentVolumeClaim:
+            claimName: terraform-state

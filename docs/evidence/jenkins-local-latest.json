@@ -1,0 +1,66 @@
+{
+  "verified_on": "2026-09-16",
+  "environment": "Local devops-lab VM; not the AWS builder",
+  "build": 2,
+  "result": "SUCCESS",
+  "commit": "daa038cd34f8d18f5c223ea405e5600b23ccbe0b",
+  "image_tag": "daa038cd34f8",
+  "image_digest": "sha256:e072aa585d6bf0565ae17176d7525ac7bce55603f20b4b37bc592cacc2b169bc",
+  "stages": [
+    {
+      "name": "Clone Repository",
+      "status": "SUCCESS",
+      "duration_ms": 5979
+    },
+    {
+      "name": "Prepare Tools",
+      "status": "SUCCESS",
+      "duration_ms": 1769
+    },
+    {
+      "name": "Parallel Checks",
+      "status": "SUCCESS",
+      "duration_ms": 187
+    },
+    {
+      "name": "Linting",
+      "status": "SUCCESS",
+      "duration_ms": 742
+    },
+    {
+      "name": "Security Scan",
+      "status": "SUCCESS",
+      "duration_ms": 22382
+    },
+    {
+      "name": "Application Tests",
+      "status": "SUCCESS",
+      "duration_ms": 1207
+    },
+    {
+      "name": "Validate Deployment Files",
+      "status": "SUCCESS",
+      "duration_ms": 1609
+    },
+    {
+      "name": "Build Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 3038
+    },
+    {
+      "name": "Scan Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 1258
+    },
+    {
+      "name": "Push to Docker Hub",
+      "status": "SUCCESS",
+      "duration_ms": 8488
+    },
+    {
+      "name": "Declarative: Post Actions",
+      "status": "SUCCESS",
+      "duration_ms": 348
+    }
+  ]
+}

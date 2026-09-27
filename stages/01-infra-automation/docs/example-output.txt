@@ -1,0 +1,20 @@
+INFO: Provisioning run started.
+Machine creation is simulated.
+After the simulation, Nginx will be configured on this Linux host.
+
+Machine name (or 'done' to finish): Simulated OS (Ubuntu/CentOS): CPU cores (e.g. 2 or 2vCPU): RAM in GB (e.g. 4 or 4GB): Added web-01.
+
+Machine name (or 'done' to finish): Simulated OS (Ubuntu/CentOS): CPU cores (e.g. 2 or 2vCPU): RAM in GB (e.g. 4 or 4GB): Added db-01.
+
+Machine name (or 'done' to finish): INFO: Saved 2 machine definition(s) to /home/dror/infra-automation/configs/instances.json.
+INFO: SIMULATED machine created: web-01 | Ubuntu | 2 vCPU | 4 GB RAM
+INFO: SIMULATED machine created: db-01 | CentOS | 4 vCPU | 8 GB RAM
+INFO: Starting Bash service setup.
+2026-09-15T00:09:44+03:00 - BASH - INFO - Nginx setup started.
+2026-09-15T00:09:44+03:00 - BASH - INFO - Installing Nginx. Package output is written to provisioning.log.
+2026-09-15T00:09:50+03:00 - BASH - INFO - Nginx package installed.
+2026-09-15T00:09:50+03:00 - BASH - INFO - Updated /var/www/infra-automation/index.html.
+2026-09-15T00:09:50+03:00 - BASH - INFO - Updated /etc/nginx/sites-available/infra-automation.
+2026-09-15T00:09:51+03:00 - BASH - INFO - Nginx setup completed. Demo site: http://127.0.0.1:8080
+INFO: Provisioning simulation and service setup completed successfully.
+INFO: Provisioning run finished.

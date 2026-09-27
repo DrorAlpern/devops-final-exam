@@ -1,0 +1,71 @@
+{
+  "verified_on": "2026-09-16",
+  "environment": "Local devops-lab Jenkins; not the AWS builder",
+  "build": 3,
+  "result": "SUCCESS",
+  "commit": "f0605d27af8d4530f185d1d8be551ecbd9e094e7",
+  "image_tag": "f0605d27af8d",
+  "image_digest": "sha256:563d1966665f873a127337cf7b12c9c1082ca4f5ae1e26dbf7947993209934bf",
+  "scan_findings": {
+    "bandit.json": 0,
+    "image-security.json": 0,
+    "source-security.json": 0
+  },
+  "stages": [
+    {
+      "name": "Clone Repository",
+      "status": "SUCCESS",
+      "duration_ms": 2901
+    },
+    {
+      "name": "Prepare Tools",
+      "status": "SUCCESS",
+      "duration_ms": 1518
+    },
+    {
+      "name": "Parallel Checks",
+      "status": "SUCCESS",
+      "duration_ms": 189
+    },
+    {
+      "name": "Linting",
+      "status": "SUCCESS",
+      "duration_ms": 714
+    },
+    {
+      "name": "Security Scan",
+      "status": "SUCCESS",
+      "duration_ms": 498
+    },
+    {
+      "name": "Application Tests",
+      "status": "SUCCESS",
+      "duration_ms": 1175
+    },
+    {
+      "name": "Validate Deployment Files",
+      "status": "SUCCESS",
+      "duration_ms": 1252
+    },
+    {
+      "name": "Build Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 2765
+    },
+    {
+      "name": "Scan Docker Image",
+      "status": "SUCCESS",
+      "duration_ms": 935
+    },
+    {
+      "name": "Push to Docker Hub",
+      "status": "SUCCESS",
+      "duration_ms": 8491
+    },
+    {
+      "name": "Declarative: Post Actions",
+      "status": "SUCCESS",
+      "duration_ms": 376
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "number": 6,
+  "building": false,
+  "result": "SUCCESS",
+  "timestamp": 1790532755328,
+  "duration": 54493,
+  "stages": [
+    {
+      "name": "Clone Repository",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Prepare Tools",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Parallel Checks",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Linting",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Security Scan",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Python Tests",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Offline Terraform Tests",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Validate Deployment Files",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Build Docker Image",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Scan Docker Image",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Smoke Test Docker Image",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Push to Docker Hub",
+      "status": "SUCCESS"
+    },
+    {
+      "name": "Declarative: Post Actions",
+      "status": "SUCCESS"
+    }
+  ],
+  "source_commits": [
+    "328e0bbe206cfa6a1fe130576ef0eeea27252897"
+  ],
+  "environment": "Local Ubuntu Jenkins controller and Docker agent",
+  "image": "droralpern/flask-aws-monitor:328e0bbe206c",
+  "image_digest": "sha256:6c31d9a2113a88a6149453d35f5c485eb9ad8869de41388a7caa7e9bb1ce2c9e",
+  "verification": {
+    "python_tests": 34,
+    "mocked_terraform_tests": 10,
+    "kubernetes_resources": 16,
+    "image_high_critical_findings": 0,
+    "source_high_critical_findings": 0,
+    "secret_findings": 0
+  }
+}

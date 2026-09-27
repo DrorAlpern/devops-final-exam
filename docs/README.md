@@ -1,7 +1,15 @@
 # Project notes
 
-This directory records requirements, implementation decisions, and verified
-results. A planned check is not a passing check. Cloud and deployment evidence
-will be added only after the corresponding commands have actually succeeded.
+- [Submission guide](submission.md): reviewer entry point and assignment boundaries.
+- [Local lab](../lab/README.md): run the complete local inventory without an AWS account.
+- [Requirements](requirements.md): brief-to-implementation map and verification limits.
+- [Architecture](architecture.md): how Terraform, the application, CI, and Kubernetes connect.
+- [Walkthrough](walkthrough.md): what each component does and where it runs.
+- [Practice session](practice.md): a guided exercise using the running system.
+- [Current evidence](evidence/local-submission.md): local submission checks.
+- [Historical verification](verification.md): earlier implementation checkpoints.
+- [Remaining work](next-steps.md): delivery checklist and optional real AWS deployment.
 
-Start with [requirements.md](requirements.md).
+Only reviewed evidence belongs in public Git history. Keep credentials,
+private account details, raw local logs, and administrative correspondence
+outside this repository.

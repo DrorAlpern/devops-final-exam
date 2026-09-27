@@ -22,3 +22,6 @@ crash.*.log
 .kube/
 evidence/private/
 *.log
+.ruff_cache/
+reports/
+.tools/

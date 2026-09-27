@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moto
+  namespace: devops-submission
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels: {app: moto}
+  template:
+    metadata:
+      labels: {app: moto}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: moto
+          image: motoserver/moto:5.2.3@sha256:91fd602a21f49cf9eb82fdf474015a3c131d40104c8297ea6a2ca920708ae32c
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MOTO_PORT
+              value: "5000"
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: "1", memory: 384Mi}
+          readinessProbe:
+            httpGet: {path: /moto-api/, port: 5000}
+            initialDelaySeconds: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moto
+  namespace: devops-submission
+spec:
+  selector: {app: moto}
+  ports:
+    - port: 5000
+      targetPort: 5000

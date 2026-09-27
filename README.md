@@ -1,42 +1,66 @@
-# DevOps Practical Project
+# DevOps Rolling Project
 
-A course project that packages a Flask AWS resource monitor, provisions an
-EC2 builder with Terraform, and adds CI/CD and Kubernetes deployments.
+A Flask dashboard for AWS inventory, with Terraform, a multi-stage Docker
+image, Jenkins CI, Kubernetes manifests, and a Helm chart.
 
-The course coordinator supplied the End-to-End DevOps Practical Exam Outline
-as Stage 3 of the rolling project. Stage 1 remains in its existing repository.
+**Start here:** [Run the local lab](lab/README.md).
+The complete local demonstration needs Docker and does not require an AWS
+account. Terraform provisions API resources in Moto; the application reads
+those resources through Boto3. Actual application containers run on Linux and
+kind. The dashboard clearly identifies the emulated inventory.
 
-## Current status
+## Review and run
 
-Requirements have been reviewed. Implementation and live verification are in
-progress. The course AWS account, the required VPC, Docker Hub access, and the
-remote Kubernetes cluster have not yet been verified. No cloud resources have
-been created and no final submission has been sent.
+```bash
+git clone https://github.com/DrorAlpern/devops-final-exam.git
+cd devops-final-exam
+bash lab/run.sh up
+```
 
-## Structure
+Open **http://127.0.0.1:15005** on the Docker host. On a remote Linux host, use
+the SSH tunnel described in [lab/README.md](lab/README.md).
+The command also verifies all four resource categories and an API
+create/delete operation. It downloads pinned tools/images on first use.
 
-| Directory | Purpose |
+## Project map
+
+| Path | Purpose |
 | --- | --- |
-| `terraform/` | EC2 builder, security group, SSH public key, and outputs |
-| `app/` | Flask application and Docker build |
-| `ci/` | Jenkins and Azure DevOps pipeline support |
-| `k8s/` | Kubernetes Deployment and Service |
-| `helm/` | Configurable application chart |
-| `tests/` | Application tests and checks |
-| `docs/` | Requirements, decisions, and verification evidence |
+| [stages/01-infra-automation](stages/01-infra-automation/README.md) | Stage 1: Python machine simulator and Bash/Nginx automation |
+| [app](app/README.md) | Flask/Boto3 inventory dashboard and multi-stage Docker build |
+| [lab](lab/README.md) | Reproducible Compose and kind environment using local AWS API emulation |
+| [terraform](terraform/README.md) | Real-AWS deployment configuration with a configurable existing VPC |
+| [ci](ci/README.md) | Quality gates, Jenkins controller/agent, and optional Azure pipeline |
+| [k8s](k8s/README.md) | Raw Kubernetes manifests for a supplied AWS identity |
+| [helm](helm/README.md) | Configurable application chart |
+| [docs/submission.md](docs/submission.md) | Reviewer entry point, scope, and evidence |
+
+The end-to-end application covers the later stages of the rolling project.
+Stage 2 was previously assessed separately and is not recreated here.
+The separate module assignment is
+[Docker & Kubernetes: Crypto Price Tracker](https://github.com/DrorAlpern/docker-kubernetes-exam).
+
+## Environment and evidence
+
+- Jenkins builds, checks, scans, and publishes the application to
+  [Docker Hub](https://hub.docker.com/r/droralpern/flask-aws-monitor).
+- The local lab creates VPC, subnet, routing, EC2, AMI, and load-balancer API
+  records in Moto, then checks the dashboard against those records.
+- kind runs the actual application, emulator, and Terraform job. Helm manages
+  a separate application release in that namespace.
+- The real-AWS configuration remains available. Real EC2 provisioning, cloud
+  IAM enforcement, and AWS network behavior have not been demonstrated.
+
+See [current local verification](docs/evidence/local-submission.md) and
+[earlier dated checks](docs/verification.md). Emulated EC2 records do not
+represent booted virtual machines; the Linux host supplies the actual compute.
 
 ## Git workflow
 
-The initial repository commit starts on `main`, as explicitly requested by the
-brief. Create `dev` from it. Develop each section on its own `feature/*` branch,
-validate it, and merge it into `dev`. The completed project goes from `dev` to
-`main` through a pull request. Do not push later development commits directly
-to `main`.
+Feature branches are reviewed and merged into `dev`; the delivery version
+is merged into `main` through a pull request. The
+`stage-3-docker-starter` tag preserves the original broken application
+before the missing AWS resource queries were corrected.
 
-## Source material
-
-- [Course brief](https://docs.google.com/document/d/15LF99pO3h7yz7pXHeyrR9aejvMt3GbZ1ny64zZby6aA/edit)
-- [Requirements and open dependencies](docs/requirements.md)
-
-All documentation is maintained in English. Starter application and pipeline
-examples come from the course brief; corrections will be documented in Git.
+All documentation is maintained in English. Source code, manifests, and
+run instructions are public; credentials, state, and private logs are excluded.
