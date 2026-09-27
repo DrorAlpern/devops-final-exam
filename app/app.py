@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime, timezone
+from functools import lru_cache
 
 import boto3
 from botocore.config import Config
@@ -12,8 +13,9 @@ app = Flask(__name__)
 REGION = os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or "us-east-1"
 
 
+@lru_cache(maxsize=1)
 def create_clients():
-    # Boto3 supports environment credentials, profiles, and instance roles.
+    # Reuse connections and loaded service models within each worker process.
     session = boto3.Session(region_name=REGION)
     config = Config(
         connect_timeout=3, read_timeout=10, retries={"mode": "standard", "max_attempts": 2}
@@ -79,6 +81,7 @@ def home():
         "index.html",
         resources=resources,
         error=error,
+        local_endpoint=bool(os.getenv("AWS_ENDPOINT_URL")),
         region=REGION,
         updated=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
     ), status

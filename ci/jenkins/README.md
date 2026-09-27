@@ -1,3 +1,5 @@
+> For the account-free submission, use [the local lab](../../lab/README.md). It exercises Jenkins on the Linux VM; AWS-hosted Jenkins has not been tested.
+
 # Local Jenkins environment
 
 This lab follows the course's controller/agent approach using official images
@@ -59,6 +61,5 @@ Docker socket and can control the lab's Docker engine. Use only trusted jobs
 on this dedicated VM. No host user is added to the Docker group; socket group
 access is granted only to the agent container. Keep the UI behind SSH.
 
-Local execution does not replace Jenkins installation and execution on the
-AWS builder required by the course. See the [verification record](../../docs/verification.md)
+The verified submission runs Jenkins on the local Linux VM. Jenkins execution on a real AWS builder has not been performed. See the [verification record](../../docs/verification.md)
 for the environments and results actually tested.

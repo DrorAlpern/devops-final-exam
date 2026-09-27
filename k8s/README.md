@@ -1,3 +1,5 @@
+> The account-free submission uses [the local lab](../lab/README.md). This page also documents the real AWS deployment option, which has not been executed.
+
 # Kubernetes deployment
 
 These manifests run the published `a56aa0c325f4` image in the
@@ -6,7 +8,7 @@ the remote cluster has compatible nodes before deployment.
 
 ## Prerequisites
 
-Use the approved course cluster and verify its context before making changes:
+Use the intended cluster and verify its context before making changes:
 
 ```bash
 kubectl config current-context
@@ -17,7 +19,7 @@ kubectl apply -f k8s/namespace.yaml
 Create an `aws-credentials` Secret in this namespace from a private environment
 file outside the repository. The file must contain `AWS_ACCESS_KEY_ID` and
 `AWS_SECRET_ACCESS_KEY`; add `AWS_SESSION_TOKEN` for temporary credentials.
-Use the course-approved read-only identity. Do not print or commit the file.
+Use the read-only AWS identity. Do not print or commit the file.
 
 ```bash
 chmod 600 "$HOME/.config/devops-monitor/aws.env"

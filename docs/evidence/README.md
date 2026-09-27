@@ -31,3 +31,10 @@ and scan results. The live AWS account and network have not been checked.
 [Local Jenkins build #5](jenkins-release-gates.json) records the repository-wide
 secret scan and isolated image smoke test before the Docker Hub push. It also
 includes the Python/Terraform test counts, scan results, and image digest.
+
+## Current local submission
+
+[27 September integration checks](local-submission.md) cover the account-free
+Compose and kind profiles, Terraform applied to Moto, live inventory changes,
+pod replacement, and Helm upgrade/rollback. This supersedes the earlier
+sample-data-only preview as the default local demonstration.

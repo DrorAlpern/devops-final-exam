@@ -1,57 +1,40 @@
-# Stage 3 requirements
+# Requirements and implementation
 
-Reviewed on 15 September 2026. The student confirmed that this exam outline is
-the correct Stage 3 material. Final submission happens after the entire
-rolling project is finished.
+The rolling project follows the supplied end-to-end brief. Subsequent course
+guidance states that dedicated infrastructure is no longer available, an
+equivalent network may be used, kind is acceptable, and public GitHub source
+is the review artifact. Docker/Kubernetes is a separate module assignment.
 
-## Required work
-
-| Section | Deliverable | Verification |
+| Requirement | Location | Demonstration |
 | --- | --- | --- |
-| Git | New public repository; main, dev, and feature branches | Inspect branches, merges, and the final pull request |
-| Terraform | EC2 named builder in us-east-1, in the course VPC | Plan/apply, SSH access, instance and security-group outputs |
-| Docker | Multi-stage image, requirements, environment credentials, port 5001 | Build and run on the builder |
-| Debugging | Fix missing VPC, load-balancer, and AMI queries | Tests and browser display of real AWS data |
-| Jenkins | Parallel lint/security checks, image build and Docker Hub push | Successful job log and registry image |
-| Azure DevOps | Equivalent pipeline, with secret credentials | Bonus; needs an Azure DevOps project and service connection |
-| Kubernetes | Deployment and Service on the remote cluster | Ready pods, Service, and browser check |
-| Helm | Configurable image, replicas, environment, resources, and Service | Lint, install, upgrade, and workload checks |
-| Evidence | README in each source folder; logs or screenshots | Review actual results and clearly label incomplete work |
+| Stage 1 automation | stages/01-infra-automation | Python machine simulation and Bash/Nginx setup |
+| Git branches | feature branches, dev, main | Reviewed development and final pull request |
+| Infrastructure as code | terraform; lab/terraform | Cloud configuration accepts an existing VPC; local profile applies against Moto |
+| Docker and debugging | app; tests/test_app.py | Multi-stage build; VPC, ELB, and owned-AMI queries; pagination and error handling |
+| Jenkins | Jenkinsfile; ci/jenkins | Real local controller/agent pipeline and Docker Hub publication |
+| Kubernetes files | lab/k8s; k8s | Actual kind workloads; raw manifests committed |
+| Helm | helm/flask-aws-monitor | Configurable image, environment, replicas, resources, Service, and optional Ingress |
+| Documentation | README files; docs | Reproduction commands, limitations, and dated evidence |
 
-Ingress and automated Docker installation through Terraform remote-exec are
-bonus tasks. The overview mentions Ingress as a deliverable, while its detailed
-section marks it optional; include an optional chart template to support both.
+## Local environment boundary
 
-## Dependencies to resolve
+The actual compute is the Linux development VM and its containers. Moto stores
+AWS-shaped resource records and answers API requests; it does not boot EC2
+machines or prove cloud permissions. The app visibly identifies this mode.
+Cloud-only checks are not represented as completed by local tests.
 
-- Course AWS account and access method.
-- Availability of the mandated VPC `vpc-044604d0bfb707142` in `us-east-1`, and a
-  suitable public subnet. Do not silently create or substitute another VPC.
-- Student source IP/CIDR for inbound ports 22 and 5001.
-- Docker Hub: resolved. The `droralpern` account is connected and local Jenkins
-  has successfully published through its secret-file credential.
-- Remote Kubernetes cluster and access method.
-- Existing Stage 2 code: not found in the two repositories visible under the
-  connected GitHub account. Its absence does not remove the supplied starter
-  application from the brief.
+The original AWS configuration remains under `terraform`. Its VPC is now
+an input instead of the retired course VPC. Private keys are generated outside
+Terraform, and only the public key is passed to the provider. No private key
+contents are stored by the configuration.
 
-## Decisions based on the brief
+## Optional work
 
-1. Preserve the intentionally broken application in the Docker section's Git
-   checkpoint, then fix it in the separate debugging feature branch.
-2. Generate the SSH key outside Terraform. The example `tls_private_key`
-   resource stores its private key in state, contradicting the written
-   requirement. Terraform receives only the public key and outputs the local
-   private-key path.
-3. Use standard AWS credential environment variables or an available IAM role.
-   Do not bake credentials into an image or commit them to the public repository.
-4. Use real lint and security checks where the environment supports them.
-   Any mock or unavailable integration must be explicitly identified.
-5. The exam schedule in the source document does not establish a current
-   deadline or prove that its temporary infrastructure is still available.
+The Azure pipeline is provided but was not executed. Ingress was exercised
+locally over HTTP; HTTPS was not demonstrated. Terraform remote-exec is not
+implemented. These are not described as passed bonus items.
 
-## Reference links
+## Source material
 
-- [Course brief](https://docs.google.com/document/d/15LF99pO3h7yz7pXHeyrR9aejvMt3GbZ1ny64zZby6aA/edit)
-- [Jenkins installation slides linked by the brief](https://docs.google.com/presentation/d/1IteHsyHaXBItZaUJ5OIEM74Iyaxhpw0W9__AY6fSOg4/edit#slide=id.g50771a00b0_0_1439)
-- [HashiCorp explanation of private keys in state](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key)
+- [End-to-end brief](https://docs.google.com/document/d/15LF99pO3h7yz7pXHeyrR9aejvMt3GbZ1ny64zZby6aA/edit)
+- [Jenkins slides linked by the brief](https://docs.google.com/presentation/d/1IteHsyHaXBItZaUJ5OIEM74Iyaxhpw0W9__AY6fSOg4/edit)

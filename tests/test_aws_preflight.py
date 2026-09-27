@@ -17,7 +17,8 @@ import aws_preflight as preflight  # noqa: E402
 ACCOUNT = "123456789012"
 SUBNET = "subnet-0123456789abcdef0"
 GATEWAY = "igw-0123456789abcdef0"
-ARGS = ["--account-id", ACCOUNT, "--subnet-id", SUBNET]
+VPC = "vpc-11111111111111111"
+ARGS = ["--account-id", ACCOUNT, "--subnet-id", SUBNET, "--vpc-id", VPC]
 DEFAULT_ROUTE = {"DestinationCidrBlock": "0.0.0.0/0", "State": "active", "GatewayId": GATEWAY}
 
 
@@ -50,12 +51,12 @@ class PreflightTests(unittest.TestCase):
         self.identity()
         self.ec2_stub.add_response(
             "describe_vpcs",
-            {"Vpcs": [{"VpcId": preflight.COURSE_VPC, "State": "available"}]},
-            {"VpcIds": [preflight.COURSE_VPC]},
+            {"Vpcs": [{"VpcId": VPC, "State": "available"}]},
+            {"VpcIds": [VPC]},
         )
         subnet = {
             "SubnetId": SUBNET,
-            "VpcId": preflight.COURSE_VPC,
+            "VpcId": VPC,
             "State": "available",
             "AvailableIpAddressCount": 100,
             "MapPublicIpOnLaunch": False,
@@ -70,7 +71,7 @@ class PreflightTests(unittest.TestCase):
             self.ec2_stub.add_response("describe_route_tables", {"RouteTables": []}, params)
             params = {
                 "Filters": [
-                    {"Name": "vpc-id", "Values": [preflight.COURSE_VPC]},
+                    {"Name": "vpc-id", "Values": [VPC]},
                     {"Name": "association.main", "Values": ["true"]},
                 ]
             }
@@ -80,7 +81,7 @@ class PreflightTests(unittest.TestCase):
             )
             params = params | {"NextToken": "page-2"}
         table = {
-            "VpcId": preflight.COURSE_VPC,
+            "VpcId": VPC,
             "RouteTableId": "rtb-0123456789abcdef0",
             "Routes": [DEFAULT_ROUTE if route is None else route],
         } | table_changes
@@ -88,7 +89,7 @@ class PreflightTests(unittest.TestCase):
 
     def gateway(self, attachments=None):
         if attachments is None:
-            attachments = [{"VpcId": preflight.COURSE_VPC, "State": "available"}]
+            attachments = [{"VpcId": VPC, "State": "available"}]
         self.ec2_stub.add_response(
             "describe_internet_gateways",
             {"InternetGateways": [{"InternetGatewayId": GATEWAY, "Attachments": attachments}]},
@@ -96,7 +97,7 @@ class PreflightTests(unittest.TestCase):
         )
 
     def check(self):
-        return preflight.check_environment(self.sts, self.ec2, ACCOUNT, SUBNET)
+        return preflight.check_environment(self.sts, self.ec2, ACCOUNT, SUBNET, VPC)
 
     def run_cli(self, args=None, session_error=None):
         output = io.StringIO()
@@ -128,16 +129,14 @@ class PreflightTests(unittest.TestCase):
 
     def test_wrong_account_stops_before_ec2(self):
         self.identity(account="999999999999")
-        with self.assertRaisesRegex(preflight.PreflightError, "expected course account"):
+        with self.assertRaisesRegex(preflight.PreflightError, "expected account"):
             self.check()
 
     def test_missing_or_unavailable_vpc_stops_before_subnet(self):
-        for vpcs in [[], [{"VpcId": preflight.COURSE_VPC, "State": "pending"}]]:
+        for vpcs in [[], [{"VpcId": VPC, "State": "pending"}]]:
             with self.subTest(vpcs=vpcs):
                 self.identity()
-                self.ec2_stub.add_response(
-                    "describe_vpcs", {"Vpcs": vpcs}, {"VpcIds": [preflight.COURSE_VPC]}
-                )
+                self.ec2_stub.add_response("describe_vpcs", {"Vpcs": vpcs}, {"VpcIds": [VPC]})
                 with self.assertRaisesRegex(preflight.PreflightError, "missing or unavailable"):
                     self.check()
 
@@ -168,7 +167,7 @@ class PreflightTests(unittest.TestCase):
                     self.check()
 
     def test_missing_or_ambiguous_effective_route_table_is_rejected(self):
-        for tables in [[], [{"VpcId": preflight.COURSE_VPC}] * 2]:
+        for tables in [[], [{"VpcId": VPC}] * 2]:
             with self.subTest(tables=tables):
                 self.network()
                 self.ec2_stub.add_response(
@@ -182,7 +181,7 @@ class PreflightTests(unittest.TestCase):
                         {"RouteTables": []},
                         {
                             "Filters": [
-                                {"Name": "vpc-id", "Values": [preflight.COURSE_VPC]},
+                                {"Name": "vpc-id", "Values": [VPC]},
                                 {"Name": "association.main", "Values": ["true"]},
                             ]
                         },
@@ -199,7 +198,7 @@ class PreflightTests(unittest.TestCase):
     def test_missing_detached_or_wrong_vpc_gateway_is_rejected(self):
         for attachments in [
             [],
-            [{"VpcId": preflight.COURSE_VPC, "State": "detaching"}],
+            [{"VpcId": VPC, "State": "detaching"}],
             [{"VpcId": "vpc-0123456789abcdef0", "State": "available"}],
         ]:
             with self.subTest(attachments=attachments):
@@ -215,7 +214,7 @@ class PreflightTests(unittest.TestCase):
             "describe_vpcs",
             "UnauthorizedOperation",
             "PRIVATE_PROVIDER_MESSAGE",
-            expected_params={"VpcIds": [preflight.COURSE_VPC]},
+            expected_params={"VpcIds": [VPC]},
         )
         code, output, _ = self.run_cli()
         self.assertEqual(code, 1)
@@ -243,7 +242,9 @@ class PreflightTests(unittest.TestCase):
                         contextlib.redirect_stderr(io.StringIO()),
                         self.assertRaises(SystemExit) as e,
                     ):
-                        preflight.main(["--account-id", account, "--subnet-id", subnet])
+                        preflight.main(
+                            ["--account-id", account, "--subnet-id", subnet, "--vpc-id", VPC]
+                        )
                     self.assertEqual(e.exception.code, 2)
                     session.assert_not_called()
 

@@ -1,46 +1,47 @@
 # Project walkthrough
 
-## Where the work runs
+The repository contains the rolling project. Stage 1 is preserved in
+`stages/01-infra-automation`; the root application and infrastructure files
+cover the later end-to-end work. The separate Docker/Kubernetes assignment
+is linked from the root README.
 
-The Linux development VM is the working environment for editing, tests, and
-local Docker containers. GitHub stores the source and its history. Docker Hub
-stores built application images. The required AWS `builder` and the remote
-Kubernetes cluster are later deployment targets; they do not exist as verified
-project environments yet.
+## What runs where
 
-## Follow one change through the project
+The development machine is an Ubuntu VM on a Proxmox server. Docker runs the
+application and its supporting services there. kind runs a real Kubernetes
+cluster inside Docker. GitHub stores source code; Docker Hub stores the
+application image built and checked by Jenkins.
 
-1. **Python and Flask:** `app/app.py` receives a browser request. Boto3 reads
-   AWS resources, and the HTML template turns the results into four tables.
-2. **Tests:** `tests/test_app.py` supplies known AWS responses through Stubber.
-   This checks our query and error-handling logic without needing AWS access.
-3. **Docker:** `app/Dockerfile` packages the code, Python, and its dependencies.
-   An image is the saved package; a container is a running instance of it.
-4. **CI:** `Jenkinsfile` describes checkout, parallel checks, tests, build,
-   image scan, and upload. A local Jenkins job has now run all stages
-   and published the image; the builder still needs its own Jenkins run.
-5. **Kubernetes:** a Deployment keeps the requested number of containers
-   running. A Service gives those changing pods a stable access point.
-6. **Helm:** the chart generates those Kubernetes files from values, making
-   changes such as image version, replica count, and memory limits repeatable.
-7. **Terraform:** the Terraform files describe the EC2 builder and its network
-   access. Terraform validation checks the configuration; plan and apply
-   require the actual course AWS account and existing VPC.
+For the account-free lab, Moto implements the AWS API locally. Terraform
+sends requests to that API to create a network and inventory records. The
+Flask application uses Boto3 to read the same API and render those records.
+The VM, containers, HTTP requests, Jenkins job, and Kubernetes workloads are
+real. The EC2 instance, AMI, load balancer, and AWS network inside Moto are
+emulated records, not cloud machines.
 
-## Three useful distinctions
+## Follow the data
 
-- A successful local test is evidence about our code, not proof that an AWS
-  account grants the required permissions.
-- An HTTP 200 from `/healthz` means the web process answers. The inventory
-  page must be checked separately because AWS access can fail.
-- GitHub contains source files. Docker Hub contains the built image. The
-  verified image tag `47b6bf08a303` links the published package to its Git commit.
+1. Run `bash lab/run.sh up` from the repository root.
+2. Terraform creates a VPC, two subnets, routing, a security group, and
+   instance/image/load-balancer records in Moto.
+3. The Flask home page requests EC2 and ELB inventory from Moto.
+4. Jinja renders names, states, and resource IDs in the browser.
+5. The verification script adds an image, sees it on the page, deletes it,
+   and checks that it disappears. This checks the complete request path.
 
-## What to be ready to explain
+`/healthz` checks that the web process responds. It deliberately does not
+prove that inventory is available. The home page returns a useful error
+when the inventory API is unavailable instead of showing partial success.
 
-The original bug was missing VPC, load-balancer, and AMI queries. The fix
-adds those queries, reads every API page, and restricts AMIs to the current
-account. Credentials are injected when running the container, not baked
-into the image. Security checks initially caught vulnerable OS packages;
-changing the base and updating the remaining library cleared the configured
-HIGH/CRITICAL scan gate.
+## Why the tools are separate
+
+Terraform describes infrastructure. Docker packages the application.
+Jenkins checks source and publishes an image. Kubernetes keeps containers
+running and exposes them through a Service. Helm packages Kubernetes
+configuration so the same application can be installed, upgraded, and
+rolled back with explicit values.
+
+Use [the local instructions](../lab/README.md) for commands and cleanup.
+The separate `terraform/` directory preserves the real AWS deployment
+option with a configurable account, VPC, and subnet. It has mocked tests;
+real AWS deployment has not been performed.

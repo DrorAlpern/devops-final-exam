@@ -1,59 +1,38 @@
 # Project architecture
 
-The project follows one path from source code to a running application. GitHub
-stores the source and branch history, Jenkins checks each change and publishes
-an immutable image, and the deployment targets run that image. Terraform
-creates the AWS builder; Kubernetes and Helm manage the application workload.
-
 ```mermaid
 flowchart LR
-    developer["Development VM"] -->|push dev branch| github[(GitHub)]
-    developer -->|plan and apply| terraform[Terraform]
-    terraform -->|create in course VPC| builder["EC2 builder"]
-
-    github -->|checkout| jenkins["Jenkins controller and agent"]
-    builder --> jenkins
-    jenkins --> checks["Lint, tests, security scans"]
-    checks -->|build and push commit tag| registry[(Docker Hub)]
-
-    registry -->|pull image| compose["Docker on EC2 builder"]
-    registry -->|pull image| cluster["Course Kubernetes cluster"]
-    cluster --> workload["Deployment and Service"]
-    helm[Helm chart] -->|render and manage release| workload
-
-    browser[Browser] -->|port 5001 or port-forward| compose
-    browser -->|Service or optional Ingress| workload
-    compose -->|read-only Boto3 calls| aws["AWS EC2, VPC, ELB and AMI APIs"]
-    workload -->|read-only Boto3 calls| aws
+    git[GitHub] --> ci[Jenkins on Linux]
+    ci --> checks[Lint, tests, security]
+    checks --> image[Docker image]
+    image --> hub[Docker Hub]
+    image --> app[Flask in Docker or kind]
+    tf[Terraform local profile] --> moto[Moto AWS API emulator]
+    app -->|Boto3 read requests| moto
+    browser[Browser] --> app
+    helm[Helm chart] --> app
 ```
 
-## Responsibilities
+GitHub stores source and history. Jenkins checks the source, builds and scans
+the application image, and publishes a commit tag. Compose or kind runs the
+application. Helm manages a separate release in kind.
 
-| Component | Responsibility |
-| --- | --- |
-| GitHub | Stores source, review history, feature branches, and the final pull request. |
-| Terraform | Creates the `builder` instance and its restricted security group in the existing course VPC. |
-| Jenkins | Runs quality and security gates, builds the image, and publishes a commit-specific tag. |
-| Docker Hub | Stores the image that is used by both the EC2 and Kubernetes deployments. |
-| Flask application | Reads AWS inventory through Boto3 and presents EC2, VPC, load balancer, and AMI data. |
-| Kubernetes | Keeps the requested number of application pods running and exposes them through a stable Service. |
-| Helm | Packages the Kubernetes resources and records install, upgrade, and rollback revisions. |
+Terraform creates VPC, subnet, routing, security-group, EC2, AMI, and
+load-balancer records in Moto. The dashboard reads those records on every
+request. Creating or deleting an API resource changes the next page response.
 
-## Trust boundaries
+The emulator's EC2 entry is a record, not a booted VM. The actual application
+and Jenkins run on the Linux development host. A separate Terraform
+configuration supports real AWS deployment into a supplied existing VPC,
+but that cloud path has not been run.
 
-AWS and registry credentials are supplied only at runtime. They are never
-stored in the image or committed to Git. Terraform state, real variable files,
-private keys, Kubernetes credential files, and raw logs remain outside the
-public repository. The application identity needs read-only AWS permissions.
+## Credentials and access
 
-Jenkins can control Docker on its dedicated agent, so it runs only trusted
-repository code. The Jenkins interface and local Kubernetes API stay behind
-loopback or an SSH tunnel rather than being exposed directly to the internet.
+The local profile uses fixed dummy credentials and local service endpoints.
+Compose keeps the application and emulator on an internal network; the
+Terraform container also needs internet access for provider downloads.
+The kind Services are internal; browser access uses loopback port forwarding.
 
-## Verification boundary
-
-The complete path has been exercised locally through Jenkins, Docker Hub, kind,
-and Helm. The AWS builder and course Kubernetes cluster remain deployment
-targets until the course provides access. Local evidence proves that the code
-and automation work together; it does not claim that the remote environments
-have already been deployed.
+Real AWS keys, Docker Hub tokens, Terraform state, and kubeconfig files are
+excluded from public Git history. The Jenkins Docker-capable agent is used
+only for trusted project code.

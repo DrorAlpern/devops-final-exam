@@ -1,5 +1,6 @@
 """Exercise AWS responses without contacting an AWS account."""
 
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -155,6 +156,19 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json, {"status": "ok"})
         self.clients.assert_not_called()
+
+    def test_local_endpoint_is_visibly_identified(self):
+        self.queue_empty()
+        with patch.dict(os.environ, {"AWS_ENDPOINT_URL": "http://moto:5000"}):
+            response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Local AWS API lab", response.text)
+
+    def test_normal_inventory_does_not_claim_local_emulation(self):
+        self.queue_empty()
+        with patch.dict(os.environ, {}, clear=True):
+            response = self.client.get("/")
+        self.assertNotIn("Local AWS API lab", response.text)
 
 
 if __name__ == "__main__":

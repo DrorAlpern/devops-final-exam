@@ -1,3 +1,5 @@
+> The account-free submission uses [the local lab](../lab/README.md). This page also documents the real AWS deployment option, which has not been executed.
+
 # CI pipelines
 
 The root `Jenkinsfile` fixes the course starter's invalid parallel-stage
@@ -21,7 +23,7 @@ The image smoke test starts the exact image built by CI with no network or AWS
 credentials. It checks that `/healthz` returns 200 and the inventory page
 returns a helpful 503 without a traceback. The temporary container is removed
 afterward, including when a check fails. This verifies application startup and
-failure handling; a live AWS inventory still needs the course account.
+failure handling; a live AWS inventory requires an active AWS account.
 
 ## Jenkins setup
 
@@ -79,7 +81,7 @@ it without a CI agent. No group permissions are changed by these scripts.
 
 The preflight unit tests and Terraform mock tests run without an AWS identity.
 The live [AWS preflight](../terraform/PREFLIGHT.md) is a separate, manual read
-check after course access arrives; CI does not attempt it.
+check when using the real AWS option; CI does not attempt it.
 
 ## Future AWS builder setup
 

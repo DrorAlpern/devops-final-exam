@@ -1,42 +1,15 @@
-# Remaining work
+# Delivery checklist
 
-## Course environment
+The course no longer supplies its former lab. An equivalent network and kind
+are accepted alternatives. The local submission profile is documented in
+[lab/README.md](../lab/README.md).
 
-Confirm the AWS account and access to the required VPC
-`vpc-044604d0bfb707142` in `us-east-1`. The brief prohibits creating another
-VPC. A personal account cannot be substituted without course guidance.
-Obtain the public subnet, allowed source IP, and approved credentials/roles.
-Confirm remote Kubernetes access, version, and node architecture too.
+Before delivery, use a clean clone, execute the local workflow, inspect the
+public evidence, and complete the dev-to-main pull request. Provide the public
+repository link; its submission guide links to the separate Docker/Kubernetes
+assignment. No submission email is sent by project scripts.
 
-## Completed while waiting
-
-Local Jenkins completed all stages and published an image. A local kind cluster
-passed production rollout, HTTP checks, pod recovery, and Helm upgrade/rollback.
-A local Ingress controller also passed hostname routing and browser checks.
-Ten Terraform mock tests and fifteen preflight unit tests also pass locally.
-The [AWS preflight](../terraform/PREFLIGHT.md) is ready for the confirmed
-account and subnet, but has not contacted a live account.
-These results reduce deployment uncertainty, but do not replace the course
-environments. See [verification](verification.md) for evidence.
-
-## Cloud and CI verification
-
-1. Run the AWS preflight, review Terraform inputs and plan; create the builder only after the account,
-   network, and expected cost are agreed. Verify SSH and restricted port 5001.
-2. Install Docker and Compose on that builder. Run the published monitor with
-   the approved AWS read identity and verify the four inventory sections.
-3. Install the course Jenkins environment on the builder. Replace the demo
-   password, keep the UI behind SSH, and check the agent's Python/Docker tools.
-4. Store the Docker login as secret-file credential `dockerhub-config`. Validate the
-   Jenkinsfile and run every stage, including a real image push. Keep evidence.
-5. Configure and run the Azure equivalent if access is available.
-6. Deploy the raw Kubernetes files and verify them in the browser. Then install
-   the separate Helm release, test an upgrade and rollback, and test Ingress
-   if the course cluster has a suitable controller.
-
-## Completion
-
-Record actual cloud/CI results and screenshots, update each status, and review
-for secrets before publishing evidence. Merge the completed `dev` branch into
-`main` through a pull request. Final submission waits until the entire rolling
-project is complete; no submission has been sent from this repository.
+Optional later cloud work remains possible using the configuration under
+`terraform` and an existing VPC in an active AWS account. That is a different
+environment from the local submission profile and needs its own plan, apply,
+SSH, IAM, and browser evidence.
