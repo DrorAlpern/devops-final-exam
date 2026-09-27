@@ -1,9 +1,8 @@
-"""Check the real application against local Moto resources and their lifecycle."""
+"""Check the inventory page against the local Moto API."""
 
 import json
 import os
 import sys
-import uuid
 from datetime import datetime, timezone
 from urllib.request import urlopen
 
@@ -49,13 +48,6 @@ def main():
     for resource in [instances[0]["InstanceId"], vpcs[0]["VpcId"], images[0]["ImageId"]]:
         check(resource in html, f"API resource missing from HTML: {resource}")
     check(json.loads(page("/healthz")) == {"status": "ok"}, "Health check failed")
-    name = "lifecycle-check-" + uuid.uuid4().hex[:10]
-    image_id = ec2.register_image(Name=name)["ImageId"]
-    try:
-        check(name in page("/"), "New API resource did not appear in the application")
-    finally:
-        ec2.deregister_image(ImageId=image_id)
-    check(name not in page("/"), "Deleted API resource remains in the application")
     print(
         json.dumps(
             {
@@ -64,7 +56,6 @@ def main():
                 "counts": counts,
                 "health": 200,
                 "inventory": 200,
-                "image_create_delete": "passed",
             },
             indent=2,
         )

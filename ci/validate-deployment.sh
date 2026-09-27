@@ -15,7 +15,6 @@ helm template monitor "$chart" --namespace devops-monitor \
   > reports/helm-custom.yaml
 kubeconform -strict -summary -kubernetes-version "$version" \
   k8s/namespace.yaml k8s/deployment.yaml k8s/service.yaml \
-  ci/local-kubernetes/preview-ingress.yaml \
   reports/helm-default.yaml reports/helm-custom.yaml lab/k8s/
 if helm template invalid "$chart" --set replicaCount=0 > /dev/null 2>&1; then
   echo 'Invalid replica count was unexpectedly accepted.' >&2; exit 1

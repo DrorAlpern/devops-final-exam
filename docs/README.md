@@ -1,15 +1,9 @@
-# Project notes
+# Documentation
 
-- [Submission guide](submission.md): reviewer entry point and assignment boundaries.
-- [Local lab](../lab/README.md): run the complete local inventory without an AWS account.
-- [Requirements](requirements.md): brief-to-implementation map and verification limits.
-- [Architecture](architecture.md): how Terraform, the application, CI, and Kubernetes connect.
-- [Walkthrough](walkthrough.md): what each component does and where it runs.
-- [Practice session](practice.md): a guided exercise using the running system.
-- [Current evidence](evidence/local-submission.md): local submission checks.
-- [Historical verification](verification.md): earlier implementation checkpoints.
-- [Remaining work](next-steps.md): delivery checklist and optional real AWS deployment.
+- [Architecture](architecture.md): components and request flow.
+- [Verification](verification.md): commands run, results, and mock boundaries.
+- [Evidence](evidence/README.md): saved output from the local runs.
 
-Only reviewed evidence belongs in public Git history. Keep credentials,
-private account details, raw local logs, and administrative correspondence
-outside this repository.
+The [course brief](https://docs.google.com/document/d/15LF99pO3h7yz7pXHeyrR9aejvMt3GbZ1ny64zZby6aA/edit)
+defines the required Terraform, Docker, Jenkins, Kubernetes, and Helm work.
+Run instructions are in the README for each component.
