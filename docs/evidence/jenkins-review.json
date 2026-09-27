@@ -1,9 +1,9 @@
 {
-  "number": 6,
+  "number": 7,
   "building": false,
   "result": "SUCCESS",
-  "timestamp": 1790532755328,
-  "duration": 54493,
+  "timestamp": 1790538553185,
+  "duration": 93668,
   "stages": [
     {
       "name": "Clone Repository",
@@ -59,17 +59,20 @@
     }
   ],
   "source_commits": [
-    "328e0bbe206cfa6a1fe130576ef0eeea27252897"
+    "6896b887546673d47e0d3433fad69402280d2319"
   ],
   "environment": "Local Ubuntu Jenkins controller and Docker agent",
-  "image": "droralpern/flask-aws-monitor:328e0bbe206c",
-  "image_digest": "sha256:6c31d9a2113a88a6149453d35f5c485eb9ad8869de41388a7caa7e9bb1ce2c9e",
+  "image": "droralpern/flask-aws-monitor:6896b8875466",
+  "image_digest": "sha256:9e23a5f1dac4fa483b49c24a6b654b8ea60da24cfe6903cd29f79c01ba735f0e",
   "verification": {
-    "python_tests": 34,
+    "python_tests": 19,
     "mocked_terraform_tests": 10,
-    "kubernetes_resources": 16,
-    "image_high_critical_findings": 0,
-    "source_high_critical_findings": 0,
-    "secret_findings": 0
+    "kubernetes_resources": 15,
+    "scan_findings": {
+      "image-security.json": 0,
+      "source-security.json": 0,
+      "repository-secrets.json": 0,
+      "bandit.json": 0
+    }
   }
 }

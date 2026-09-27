@@ -1,40 +1,16 @@
-# Local execution evidence
+# Execution evidence
 
-These records summarize observed service runs on the development VM. They
-contain no account credentials and make no claim about the AWS builder or
-remote course cluster.
+[Jenkins build 7](jenkins-review.json) records the successful pipeline from
+27 September 2026, including the source commit, image digest, and checks.
+The full console and scan reports remain in the local Jenkins build archive.
 
-- [Jenkins build](jenkins-local.json): source commit, every stage result, and
-  the image published by the job. Full logs and scan reports remain in Jenkins.
-- [Final Jenkins check](jenkins-local-latest.json): successful rerun after adding
-  the local cluster helpers, with its source commit and published digest.
-- [Kubernetes exercise](kubernetes-local.json): server version, HTTP checks,
-  pod replacement, three-replica upgrade, and one-replica rollback.
+The local environment uses Moto for AWS APIs; these results do not represent
+an EC2 deployment.
 
-The sample-data browser preview is a separate test deployment. The production
-application returned a readable 503 when no AWS credentials were supplied.
+[Runtime output](runtime-review.txt) contains excerpts from the Compose and
+kind runs, workload status, Helm upgrade/rollback history, and the registry
+image digest verified on both application Deployments.
 
-- [Ingress exercise](ingress-local.json): host routing, expected response content,
-  static assets, unknown-host rejection, and browser checks through Traefik.
-
-- [Jenkins after Ingress](jenkins-ingress.json): build #3, including the new
-  helper checks, nine deployment resources, and a registry push.
-
-## AWS readiness tests
-
-[Local Jenkins build #4](jenkins-aws-readiness.json) records the 22 Python
-tests and ten mocked Terraform plan tests, along with the image publication
-and scan results. The live AWS account and network have not been checked.
-
-## Release gates
-
-[Local Jenkins build #5](jenkins-release-gates.json) records the repository-wide
-secret scan and isolated image smoke test before the Docker Hub push. It also
-includes the Python/Terraform test counts, scan results, and image digest.
-
-## Current local submission
-
-[27 September integration checks](local-submission.md) cover the account-free
-Compose and kind profiles, Terraform applied to Moto, live inventory changes,
-pod replacement, and Helm upgrade/rollback. This supersedes the earlier
-sample-data-only preview as the default local demonstration.
+[Browser screenshot](kubernetes-review.png) shows the live application through
+the kind Service on 27 September 2026. Moto also supplies a default VPC;
+the scripted check counts the VPC created for this lab.

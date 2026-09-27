@@ -14,7 +14,6 @@
   </div></header>
   <main class="wrap">
     {% if local_endpoint %}<aside class="notice">Local AWS API lab: inventory is read from the Moto emulator. These resources are simulated; no AWS account is connected.</aside>{% endif %}
-    {% if demo %}<aside class="notice">Test preview: all resources below are sample data. No AWS account is connected.</aside>{% endif %}
     {% if error %}
       <section class="error" role="alert"><h2>Unable to load AWS inventory</h2><p>{{ error }}</p>
       <p>The web service is running. Inventory will appear when AWS access is configured.</p></section>

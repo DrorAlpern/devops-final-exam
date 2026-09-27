@@ -19,7 +19,7 @@ spec:
         seccompProfile: {type: RuntimeDefault}
       containers:
         - name: monitor
-          image: droralpern/flask-aws-monitor:local-lab
+          image: droralpern/flask-aws-monitor:6896b8875466
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5001
