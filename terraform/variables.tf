@@ -1,3 +1,12 @@
+variable "vpc_id" {
+  description = "Existing VPC in the selected account; an equivalent network is supported."
+  type        = string
+  validation {
+    condition     = can(regex("^vpc-([a-f0-9]{8}|[a-f0-9]{17})$", var.vpc_id))
+    error_message = "Provide the existing VPC ID for this environment."
+  }
+}
+
 variable "aws_account_id" {
   description = "The verified course AWS account. Prevents applying to another account."
   type        = string

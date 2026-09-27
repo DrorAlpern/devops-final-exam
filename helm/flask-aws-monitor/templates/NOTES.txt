@@ -7,5 +7,10 @@ Open a local connection:
   kubectl -n {{ .Release.Namespace }} port-forward service/{{ include "monitor.name" . }} 5002:{{ .Values.service.port }}
 
 Visit http://127.0.0.1:5002/ on the machine running port-forward.
-A Ready pod confirms web-process health. Verify the inventory page separately
-with approved AWS credentials. No sample data is enabled by this chart.
+A Ready pod confirms web-process health. Verify the inventory page separately.
+{{- if .Values.extraEnv.AWS_ENDPOINT_URL }}
+An alternate API endpoint is configured. The local lab uses Moto emulation;
+its inventory does not represent running AWS infrastructure.
+{{- else }}
+Supply an AWS identity with read permissions to view cloud inventory.
+{{- end }}

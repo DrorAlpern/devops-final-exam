@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor
+  namespace: devops-submission
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: submission-monitor}
+  template:
+    metadata:
+      labels: {app: submission-monitor}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: monitor
+          image: droralpern/flask-aws-monitor:local-lab
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5001
+          env:
+            - name: AWS_ENDPOINT_URL
+              value: http://moto:5000
+            - name: AWS_ACCESS_KEY_ID
+              value: local-lab
+            - name: AWS_SECRET_ACCESS_KEY
+              value: local-lab
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: AWS_EC2_METADATA_DISABLED
+              value: "true"
+          readinessProbe:
+            httpGet: {path: /healthz, port: 5001}
+          livenessProbe:
+            httpGet: {path: /healthz, port: 5001}
+            initialDelaySeconds: 10
+          resources:
+            requests: {cpu: 100m, memory: 64Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: temporary
+              mountPath: /tmp
+      volumes:
+        - name: temporary
+          emptyDir: {medium: Memory, sizeLimit: 64Mi}

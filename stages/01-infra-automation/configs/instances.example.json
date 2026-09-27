@@ -1,0 +1,14 @@
+[
+  {
+    "name": "web-01",
+    "os": "Ubuntu",
+    "cpu": 2,
+    "ram": 4
+  },
+  {
+    "name": "db-01",
+    "os": "CentOS",
+    "cpu": 4,
+    "ram": 8
+  }
+]

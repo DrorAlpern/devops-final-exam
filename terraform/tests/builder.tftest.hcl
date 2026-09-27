@@ -3,10 +3,10 @@ mock_provider "aws" {
   override_during = plan
 
   mock_data "aws_vpc" {
-    defaults = { id = "vpc-044604d0bfb707142" }
+    defaults = { id = "vpc-11111111111111111" }
   }
   mock_data "aws_subnet" {
-    defaults = { vpc_id = "vpc-044604d0bfb707142" }
+    defaults = { vpc_id = "vpc-11111111111111111" }
   }
   mock_data "aws_ami" {
     defaults = { id = "ami-0123456789abcdef0" }
@@ -14,6 +14,7 @@ mock_provider "aws" {
 }
 
 variables {
+  vpc_id               = "vpc-11111111111111111"
   aws_account_id       = "123456789012"
   public_subnet_id     = "subnet-0123456789abcdef0"
   allowed_cidr         = "203.0.113.10/32"
@@ -26,7 +27,7 @@ run "restricted_builder" {
 
   assert {
     condition = (
-      aws_security_group.builder.vpc_id == "vpc-044604d0bfb707142" &&
+      aws_security_group.builder.vpc_id == "vpc-11111111111111111" &&
       aws_instance.builder.subnet_id == var.public_subnet_id &&
       aws_instance.builder.associate_public_ip_address
     )

@@ -1,3 +1,5 @@
+> Current reviewer path: [local submission guide](submission.md). This page records earlier dated checks; the current setup uses an equivalent network in Moto and a local kind cluster.
+
 # Stage 3 verification
 
 Initial checks: 15 September 2026. Local CI and cluster checks: 16 September 2026.

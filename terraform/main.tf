@@ -1,9 +1,5 @@
-locals {
-  course_vpc_id = "vpc-044604d0bfb707142"
-}
-
 data "aws_vpc" "course" {
-  id = local.course_vpc_id
+  id = var.vpc_id
 }
 
 data "aws_subnet" "public" {
@@ -12,7 +8,7 @@ data "aws_subnet" "public" {
   lifecycle {
     postcondition {
       condition     = self.vpc_id == data.aws_vpc.course.id
-      error_message = "The selected subnet must belong to the VPC required by the course."
+      error_message = "The selected subnet must belong to the configured VPC."
     }
   }
 }

@@ -1,3 +1,5 @@
+> For a complete local inventory without an AWS account, start with [the local lab](../lab/README.md).
+
 # AWS Resource Monitor
 
 A Flask dashboard that lists EC2 instances, VPCs, ELBv2 load balancers, and

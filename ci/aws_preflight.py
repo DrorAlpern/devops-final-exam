@@ -8,7 +8,6 @@ from botocore.config import Config
 from botocore.exceptions import BotoCoreError, ClientError, NoCredentialsError
 
 REGION = "us-east-1"
-COURSE_VPC = "vpc-044604d0bfb707142"
 
 
 class PreflightError(Exception):
@@ -25,21 +24,21 @@ def route_tables(ec2, filters):
     return [table for page in pages for table in page["RouteTables"]]
 
 
-def check_environment(sts, ec2, account_id, subnet_id):
+def check_environment(sts, ec2, account_id, subnet_id, vpc_id):
     # Stop immediately if the current identity belongs to a different account.
     require(
         sts.get_caller_identity()["Account"] == account_id,
-        "The active AWS identity does not match the expected course account.",
+        "The active AWS identity does not match the expected account.",
     )
-    vpcs = ec2.describe_vpcs(VpcIds=[COURSE_VPC])["Vpcs"]
+    vpcs = ec2.describe_vpcs(VpcIds=[vpc_id])["Vpcs"]
     require(
         len(vpcs) == 1 and vpcs[0].get("State") == "available",
-        "The required course VPC is missing or unavailable in us-east-1.",
+        "The selected VPC is missing or unavailable in us-east-1.",
     )
     subnets = ec2.describe_subnets(SubnetIds=[subnet_id])["Subnets"]
     require(len(subnets) == 1, "The selected subnet was not found.")
     subnet = subnets[0]
-    require(subnet.get("VpcId") == COURSE_VPC, "The subnet belongs to a different VPC.")
+    require(subnet.get("VpcId") == vpc_id, "The subnet belongs to a different VPC.")
     require(subnet.get("State") == "available", "The selected subnet is not available.")
     require(subnet.get("AvailableIpAddressCount", 0) > 0, "The subnet has no free IPv4 addresses.")
 
@@ -50,13 +49,13 @@ def check_environment(sts, ec2, account_id, subnet_id):
         tables = route_tables(
             ec2,
             [
-                {"Name": "vpc-id", "Values": [COURSE_VPC]},
+                {"Name": "vpc-id", "Values": [vpc_id]},
                 {"Name": "association.main", "Values": ["true"]},
             ],
         )
     require(len(tables) == 1, "Could not identify exactly one effective route table.")
     table = tables[0]
-    require(table.get("VpcId") == COURSE_VPC, "The route table belongs to a different VPC.")
+    require(table.get("VpcId") == vpc_id, "The route table belongs to a different VPC.")
     routes = [
         route
         for route in table.get("Routes", [])
@@ -73,7 +72,7 @@ def check_environment(sts, ec2, account_id, subnet_id):
     require(
         len(gateways) == 1
         and any(
-            attachment.get("VpcId") == COURSE_VPC and attachment.get("State") == "available"
+            attachment.get("VpcId") == vpc_id and attachment.get("State") == "available"
             for attachment in gateways[0].get("Attachments", [])
         ),
         "The Internet Gateway is not attached to the required VPC.",
@@ -81,10 +80,10 @@ def check_environment(sts, ec2, account_id, subnet_id):
     # MapPublicIpOnLaunch may be false: Terraform explicitly requests a public IP.
     return {
         "account": "The active identity matches the expected account.",
-        "vpc": "The required course VPC is available in us-east-1.",
-        "subnet": "The subnet belongs to the course VPC and has free IPv4 addresses.",
+        "vpc": "The selected VPC is available in us-east-1.",
+        "subnet": "The subnet belongs to the selected VPC and has free IPv4 addresses.",
         "routing": f"The {association} route table has an active Internet Gateway default route.",
-        "gateway": "The Internet Gateway is attached to the course VPC.",
+        "gateway": "The Internet Gateway is attached to the selected VPC.",
     }
 
 
@@ -100,10 +99,17 @@ def subnet_value(value):
     return value
 
 
+def vpc_value(value):
+    if not re.fullmatch(r"vpc-(?:[0-9a-f]{8}|[0-9a-f]{17})", value):
+        raise argparse.ArgumentTypeError("Use a VPC ID containing 8 or 17 hexadecimal digits.")
+    return value
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--account-id", required=True, type=account_value)
     parser.add_argument("--subnet-id", required=True, type=subnet_value)
+    parser.add_argument("--vpc-id", required=True, type=vpc_value)
     parser.add_argument(
         "--profile", help="optional existing AWS profile; otherwise use the default chain"
     )
@@ -116,6 +122,7 @@ def main(argv=None):
             session.client("ec2", config=config),
             args.account_id,
             args.subnet_id,
+            args.vpc_id,
         )
     except PreflightError as exc:
         print(f"FAIL: {exc}")

@@ -1,69 +1,28 @@
-# A short practice session
+# Practice session
 
-The commands below run on `devops-lab` from `~/devops-final-exam`.
-They inspect the current lab; the full exercise scripts also make controlled
-changes inside the dedicated local environment.
+Use [the local lab](../lab/README.md) to start the system. Explain each step
+in your own words before moving to the next one.
 
-## 1. Identify the three places
+1. Open the inventory page. Identify the running instance, VPC, image, and
+   load balancer. Explain why the local-emulation notice is visible.
+2. Open `lab/terraform/main.tf`. Find the VPC and two subnets. Explain how
+   a Terraform reference connects a subnet to its VPC.
+3. Run `bash lab/run.sh plan`. A second plan should report no changes.
+4. Run `bash lab/run.sh verify`. Explain how the temporary-image check proves
+   that the application reads changing API data rather than fixed HTML.
+5. Open `app/app.py`. Follow the request from the Flask route through Boto3
+   to the template. Compare the home page with `/healthz`.
+6. Start the kind profile and run `bash lab/kind.sh verify`. Observe pod
+   replacement, Helm scaling, and rollback. These affect real containers.
+7. Open `Jenkinsfile`. Follow checkout, checks, tests, image build, security
+   scan, smoke test, and registry publication. Explain why a failed check
+   must stop publication.
+8. Find the first-stage Python/Bash project in `stages/01-infra-automation`.
+   Explain what it simulates and what it configures on the Linux host.
 
-GitHub stores source code and commit history. Docker Hub stores the image
-built from that code. The Linux VM runs Jenkins, Docker, and the local kind
-cluster. AWS will later provide the course builder and real inventory data.
+A useful explanation of the lab boundary: "My application and automation
+run locally. Terraform provisions AWS-style records in Moto, and Boto3
+reads them. I tested Kubernetes with kind. I have not deployed EC2 in AWS."
 
-Open `Jenkinsfile` and find the parallel Linting and Security Scan stages.
-A failed required check stops publication. In Jenkins build #5, follow one
-commit from checkout to its matching Docker Hub tag `47b6bf08a303`.
-
-## 2. See what Kubernetes keeps running
-
-```bash
-export KUBECONFIG="$HOME/.config/devops-kubernetes/kubeconfig"
-.tools/bin/kubectl -n devops-monitor get deployment,pods,service
-```
-
-The Deployment defines the desired number of copies. Pods run those copies.
-The Service routes requests to ready pods, even when a pod is replaced.
-The local verification exercise deleted a pod and observed a new ready one.
-
-## 3. Read the Helm history
-
-```bash
-.tools/bin/helm history monitor -n devops-helm-local
-.tools/bin/helm get values monitor -n devops-helm-local
-```
-
-The first exercise installed one replica, upgraded to three replicas and a
-new image tag, then rolled back. A rollback creates another revision that
-restores earlier settings; it does not erase the deployment history.
-
-## 4. Explain the two HTTP results
-
-`/healthz` returns 200 when the web process answers. The inventory page returns
-503 when the required AWS access is unavailable. A green Kubernetes readiness
-check therefore does not prove that the AWS account or IAM policy works.
-
-The separate sample preview shows the intended tables and carries a visible
-sample-data notice. It helps review the layout without pretending to have a
-working cloud connection.
-
-## 5. Follow a request through Ingress
-
-Open `http://preview.localhost:15004` while the local tunnel is running.
-The hostname selects an Ingress rule. Traefik sends the request to the preview
-Service, which selects the ready pod. The same controller routes
-`monitor.localhost` to the separate Helm application Service.
-
-The [Ingress exercise](../ci/local-kubernetes/INGRESS.md) shows the commands
-and expected responses. Explain why an unknown hostname returns 404, while
-the application's missing-AWS-access page returns 503.
-
-## 6. Explain what remains
-
-The required VPC belongs to a particular AWS account. Copying its ID into
-another account does not create access to that network. Once course access
-is confirmed, review a Terraform plan, create the builder, run the same
-application and CI workflow there, and verify the remote Kubernetes target.
-
-Be ready to explain the original missing resource queries, pagination,
-account-owned AMIs, credentials at runtime, and why security checks can block
-a build. Each of those decisions is visible in the source and test history.
+Stop only the dedicated lab resources with the cleanup commands in the
+local guide. Do not delete the shared kind cluster to stop one assignment.
