@@ -24,7 +24,7 @@ case "${1:-}" in
   plan) "${compose[@]}" run --rm terraform plan -input=false -detailed-exitcode ;;
   down)
     # Deletes only this Compose project's disposable emulator data/state.
-    "${compose[@]}" down --volumes
+    "${compose[@]}" --profile tools down --volumes
     ;;
   *) echo 'Usage: bash lab/run.sh up|verify|plan|down' >&2; exit 2 ;;
 esac
