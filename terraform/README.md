@@ -34,8 +34,7 @@ This option has not been executed. It requires an active AWS account and
 can create chargeable resources. Authenticate using the normal AWS
 credential chain; never put credentials in tracked files.
 
-1. Run the [read-only network preflight](PREFLIGHT.md) with the intended
-   account, VPC, and subnet.
+1. Confirm the account, VPC, and public subnet in the intended AWS environment.
 2. In this directory, run `bash create-ssh-key.sh`. It refuses to overwrite
    an existing key and keeps the private key outside Git.
 3. Copy `terraform.tfvars.example` to ignored `terraform.tfvars` and fill in
@@ -63,7 +62,7 @@ credentials, and actual variable files are excluded from Git.
 The brief permits Docker installation through SSH. A real EC2 installation,
 Jenkins execution there, and an HTTP check against that host remain untested.
 The optional `remote-exec` bonus is not implemented. The verified local
-execution is documented separately in [the submission guide](../docs/submission.md).
+execution is documented separately in [verification notes](../docs/verification.md).
 
 When finished with a real deployment, review `terraform plan -destroy` before
 removing the resources managed by this configuration.
