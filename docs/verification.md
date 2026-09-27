@@ -23,10 +23,11 @@ state or private files. Terraform created 12 emulated resources, all four
 inventory sections were populated, HTTP returned 200, and a second plan showed
 no changes. The kind deployment and Helm upgrade/rollback also passed.
 
-[Jenkins build 6](evidence/jenkins-local-submission.json) records the earlier
-successful pipeline and image publication. Its test count includes the AWS
-preflight helper that has since been removed. Current review results are in
-[the evidence folder](evidence/README.md).
+[Jenkins build 7](evidence/jenkins-review.json) passed after the scope review:
+19 Python tests, ten mocked Terraform tests, and 15 valid Kubernetes resources.
+The pipeline also built, scanned, smoke-tested, and published image
+`6896b8875466`. The configured scans reported no findings.
+See [the evidence folder](evidence/README.md) for runtime results.
 
 ## Not executed
 
