@@ -59,3 +59,29 @@ workloads ran for real. AWS resources were API records in Moto. No EC2 VM
 was booted, no AWS account was accessed, and no cloud networking or IAM
 enforcement was validated. The separate real-AWS Terraform configuration
 has validation and mocked tests but has not been applied to AWS.
+
+## Jenkins and registry publication
+
+[Jenkins build 6](jenkins-local-submission.json) completed successfully from
+commit `328e0bbe206cfa6a1fe130576ef0eeea27252897`. Every stage passed, including
+source checks, all 34 Python tests, ten mocked Terraform plans, deployment
+validation, image build, image scan, isolated smoke test, and Docker Hub push.
+The recorded source, image, Bandit, and secret scans contained no findings
+at their configured thresholds.
+
+Published image: `droralpern/flask-aws-monitor:328e0bbe206c` and `latest`.
+Digest: `sha256:6c31d9a2113a88a6149453d35f5c485eb9ad8869de41388a7caa7e9bb1ce2c9e`.
+
+## Fresh public clone
+
+An independent clone of the public `dev` branch at `0ed6a11` was used after
+removing the previous Compose containers and Terraform state volume. The
+clone contained no virtual environment, tools folder, or private files.
+`bash lab/run.sh up` initialized the pinned provider, created all 12 emulated
+resources, built the image, and passed API lifecycle and published-port
+checks. `bash lab/run.sh plan` then reported no changes. Existing host Docker
+image caches were available; project state and source were fresh.
+
+The cleanup command was also checked to remove its profiled Terraform volume
+and download network. The temporary kind cluster was removed after testing,
+and the host inotify setting was restored to its original value of 128.
